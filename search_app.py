@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 import sys
 from PIL import Image
 import io
+from PyQt5.QtGui import QImage
 
 from search import search_keyword
 
@@ -109,9 +110,16 @@ class ImageGalleryApp(QMainWindow):
             # Resize the image
             img = img.resize((new_width, new_height), Image.LANCZOS)  # Using LANCZOS filter for high-quality downsampling
 
-            img.save("temp_fullsize.jpg")
-            pixmap = QPixmap("temp_fullsize.jpg")
+            # Convert PIL Image to QImage
+            img_byte_array = io.BytesIO()
+            img.save(img_byte_array, format='JPEG')
+            qimg = QImage()
+            qimg.loadFromData(img_byte_array.getvalue())
 
+            # Convert QImage to QPixmap
+            pixmap = QPixmap.fromImage(qimg)
+
+            # Create a new window to display the image
             image_window = QMainWindow(self)
             image_window.setWindowTitle("Image Viewer")
             img_label = QLabel()
@@ -119,11 +127,11 @@ class ImageGalleryApp(QMainWindow):
             img_label.setAlignment(Qt.AlignCenter)
             image_window.setCentralWidget(img_label)
             image_window.resize(pixmap.size())
-                
+            
+            # Center the image window on the screen
             screen = QApplication.primaryScreen().geometry()
             screen_width = screen.width()
             screen_height = screen.height()
-
 
             # Calculate the center position
             center_x = (screen_width - self.width()) // 2

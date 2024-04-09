@@ -7,6 +7,9 @@ from AppKit import NSWorkspace
 from datetime import datetime
 from PIL import Image
 from active_window_tracker import ActiveWindowTracker
+import numpy as np
+from skimage.metrics import structural_similarity as ssim
+
 
 # Perform OCR and save the data to a text file
 def save_ocr_data_to_file(data, file_path):
@@ -57,20 +60,46 @@ def process_active_window_screenshot():
     # Save the OCR data to a text file
     save_ocr_data_to_file(active_window_screenshot_data, active_screenshot_metadata)
 
-def process_entire_screenshot():
-    # if entire_screenshot folder does not exist, create one
-    if not os.path.exists("entire_screenshot"):
-        os.makedirs("entire_screenshot")
+def get_latest_file(directory):
+    """Get the most recent file in a given directory."""
+    files = [os.path.join(directory, f) for f in os.listdir(directory)]
+    if not files:  # Check if the list is empty
+        return None
+    latest_file = max(files, key=os.path.getctime)
+    print (latest_file)
+    return latest_file
 
-    # if entire_screenshot_metadata folder does not exist, create one
-    if not os.path.exists("entire_screenshot_metadata"):
-        os.makedirs("entire_screenshot_metadata")
+def compare_images(img1, img2):
+    """Convert images to grayscale and compute the SSIM index."""
+    img1 = np.array(img1.convert('L'))  # Convert image to grayscale
+    img2 = np.array(img2.convert('L'))
+    score, _ = ssim(img1, img2, full=True)
+    return score
+
+# Process the entire screen screenshot
+def process_entire_screenshot():
+    directory = "entire_screenshot"
+    metadata_directory = "entire_screenshot_metadata"
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    if not os.path.exists(metadata_directory):
+        os.makedirs(metadata_directory)
 
     # Get the current date and time
     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Capture screenshot of the screen
     entire_screenshot = pyautogui.screenshot()
+
+    latest_file_path = get_latest_file(directory)
+    if latest_file_path:
+        latest_screenshot = Image.open(latest_file_path)
+        similarity_score = compare_images(latest_screenshot, entire_screenshot)
+        print (f"Similarity score: {similarity_score}")
+        if similarity_score > 0.95:
+            print("No significant changes detected, not saving this screenshot.")
+            return
 
     # Save the entire screenshot as an image file named with current date and time
     entire_screenshot_name = f"entire_screenshot/screenshot_{current_date}.jpg"
@@ -94,9 +123,10 @@ def process_entire_screenshot():
     # Save the OCR data to a text file
     save_ocr_data_to_file(entire_screenshot_data, entire_screenshot_metadata)
 
+
+
 def main():
 
-    # Continue until user type exit
     
     while True:
         # # Process the active window screenshot
