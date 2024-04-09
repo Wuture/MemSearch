@@ -6,19 +6,18 @@ UtopiaOS MemSearch enhances your MacOS experience by providing a powerful capabi
 To install the necessary dependencies for UtopiaOS MemSearch, run the following command:
 
 ```bash
-Copy code
 pip install -r requirements.txt
-Ensure you have Python installed on your system to use pip. It is also recommended to use a virtual environment to manage the dependencies.
 ```
+Ensure you have Python installed on your system to use pip. It is also recommended to use a virtual environment to manage the dependencies.
 
 ## Usage
 To start using UtopiaOS MemSearch, execute the included shell script:
 
 ```bash
-Copy code
 ./run.sh
-This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
 ```
+This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
+
 ## Components
 UtopiaOS MemSearch consists of several Python scripts, each serving a unique role in the system:
 
@@ -34,7 +33,3 @@ UtopiaOS MemSearch consists of several Python scripts, each serving a unique rol
 
 6. system_tracker.py: Tracks all open applications, marking each as active or dormant, thus providing a comprehensive view of your system's application usage over time.
 
-## Notes
-Bugs and Feedback: Please report any bugs or issues in the repository's issues section. Feedback and contributions to improve the application are welcome.
-
-## Future Updates: Planned future enhancements include bug fixes for active_window_tracker.py and improvements in OCR accuracy and performance.
