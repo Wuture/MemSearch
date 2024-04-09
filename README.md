@@ -6,7 +6,6 @@ UtopiaOS MemSearch enhances your MacOS experience by providing a powerful capabi
 To install the necessary dependencies for UtopiaOS MemSearch, run the following command:
 
 ```bash
-Copy code
 pip install -r requirements.txt
 Ensure you have Python installed on your system to use pip. It is also recommended to use a virtual environment to manage the dependencies.
 ```
@@ -15,7 +14,6 @@ Ensure you have Python installed on your system to use pip. It is also recommend
 To start using UtopiaOS MemSearch, execute the included shell script:
 
 ```bash
-Copy code
 ./run.sh
 This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
 ```
