@@ -33,7 +33,3 @@ UtopiaOS MemSearch consists of several Python scripts, each serving a unique rol
 
 6. system_tracker.py: Tracks all open applications, marking each as active or dormant, thus providing a comprehensive view of your system's application usage over time.
 
-## Notes
-Bugs and Feedback: Please report any bugs or issues in the repository's issues section. Feedback and contributions to improve the application are welcome.
-
-## Future Updates: Planned future enhancements include bug fixes for active_window_tracker.py and improvements in OCR accuracy and performance.
