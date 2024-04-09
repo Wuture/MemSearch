@@ -75,7 +75,7 @@ class ImageGalleryApp(QMainWindow):
             # Create a QWidget to hold the image and label
             image_widget = QWidget()
             image_layout = QVBoxLayout(image_widget)
-            image_layout.setContentsMargins(5, 0, 5, 5)  # Margin around the QWidget
+            image_layout.setContentsMargins(5, 0, 5, 0)  # Margin around the QWidget
             image_layout.setSpacing(10)
 
              # Get the original dimensions

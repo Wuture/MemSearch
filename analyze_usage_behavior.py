@@ -21,24 +21,11 @@ def analyze_usage_behavior(csv_file_path, summary_file_path):
     # Identify most frequently used applications
     most_used_apps = sorted(app_usage_time.items(), key=lambda x: x[1], reverse=True)
 
-    # Analyze usage patterns over time
-    time_intervals = ['Early Morning', 'Morning', 'Noon', 'Afternoon', 'Evening', 'Night']
-    interval_usage = defaultdict(lambda: defaultdict(timedelta))
+    # Analyze usage patterns over time (hourly breakdown)
+    hourly_usage = defaultdict(lambda: defaultdict(timedelta))
     for timestamp, app, usage_time in data:
         hour = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S').hour
-        if 4 <= hour < 8:
-            interval = 'Early Morning'
-        elif 8 <= hour < 12:
-            interval = 'Morning'
-        elif 12 <= hour < 14:
-            interval = 'Noon'
-        elif 14 <= hour < 18:
-            interval = 'Afternoon'
-        elif 18 <= hour < 22:
-            interval = 'Evening'
-        else:
-            interval = 'Night'
-        interval_usage[interval][app] += usage_time
+        hourly_usage[hour][app] += usage_time
 
     # # Analyze application switching behavior
     # app_switches = defaultdict(int)
@@ -57,18 +44,40 @@ def analyze_usage_behavior(csv_file_path, summary_file_path):
     with open(summary_file_path, 'w') as summary_file:
         summary_file.write("Summary Report:\n\n")
         summary_file.write("Most frequently used applications:\n")
+        counter = 1
         for app, usage_time in most_used_apps:
-            summary_file.write(f"{app}: {usage_time}\n")
-        summary_file.write("\nUsage patterns over time:\n")
-        for interval, app_usage in interval_usage.items():
-            summary_file.write(f"{interval}:\n")
-            for app, usage_time in app_usage.items():
-                summary_file.write(f"  {app}: {usage_time}\n")
-        # summary_file.write("\nApplication switching behavior:\n")
-        # for (app1, app2), count in app_switches.items():
-        #     summary_file.write(f"{app1} -> {app2}: {count} switches\n")
+            line = f"{counter}. {app}: {usage_time}\n"
+            # print (line)/
+            summary_file.write(f"{counter}. {app}: {usage_time}\n")
+            # summary_file.write(f"{counter}+'. '+{app}: {usage_time}\n")
+            counter += 1
+
+    # with open(summary_file_path, 'w') as summary_file:
+        summary_file.write("\nUsage patterns over time (hourly breakdown):\n")
+        for hour in range(24):
+            if hour == 0:
+                time_format = "12 AM"
+            elif hour < 12:
+                time_format = f"{hour} AM"
+            elif hour == 12:
+                time_format = "12 PM"
+            else:
+                time_format = f"{hour - 12} PM"
+
+            summary_file.write(f"{time_format}:\n")
+            for app, usage_time in hourly_usage[hour].items():
+                summary_file.write(f"- {app}: {usage_time}\n")
+
+    # # with open(summary_file_path, 'w') as summary_file:            
+    #     summary_file.write("\nApplication switching behavior:\n")
+    #     for (app1, app2), count in app_switches.items():
+    #         summary_file.write(f"{app1} -> {app2}: {count} switches\n")
+
+        counter = 1
+        # with open(summary_file_path, 'w') as summary_file:
         summary_file.write("\nAverage usage duration per application:\n")
         for app, total_time in app_usage_time.items():
             count = app_usage_count[app]
             avg_duration = total_time / count
-            summary_file.write(f"{app}: {avg_duration}\n")
+            summary_file.write(f"{counter}. {app}: {avg_duration}\n")
+            counter += 1

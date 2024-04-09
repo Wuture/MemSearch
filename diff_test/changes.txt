@@ -1,0 +1,699 @@
+--- img1
++++ img2
+@@ -6,3 +6,9 @@
+ 4
+ ChatGPT
+ 4
++nan
++@
++Kettlebell
++Jiu
++Jitsu
++Coa...
+--- img1
++++ img2
+@@ -1,4 +1,5 @@
+ nan
+ nan
+ nan
+-ob
++DevOps
++Guru
+--- img1
++++ img2
+@@ -1,8 +1,3 @@
+ nan
+ nan
+ nan
+-@
+-Kettlebell
+-Jiu
+-Jitsu
+-Coa...
+--- img1
++++ img2
+@@ -1,5 +1,7 @@
+ nan
+ nan
+ nan
+-DevOps
+-Guru
++&
++,
++Cartoonize
++Yourself
+--- img1
++++ img2
+@@ -1,3 +1,6 @@
+ nan
+ nan
+ nan
++88
++Explore
++GPTs
+--- img1
++++ img2
+@@ -1,8 +1,23 @@
+ nan
+ nan
+ nan
+-&
+-Cartoonize
+-Yourself
+-t
+-glob
++User
++Behavior
++Analysis
++«
++8
++nan
++Action
++Recommendation
++Syster
++nan
++Fix
++Python
++script
++issues
++nan
++nan
++Capture
++Active
++Window
++Screens
+--- img1
++++ img2
+@@ -1,7 +1,7 @@
+ nan
+ nan
+ nan
+-)
+-natsort
+-import
+-natsorted
++Imagem
++exibigdo
++botées
++corrigic
+--- img1
++++ img2
+@@ -1,10 +1,16 @@
+ nan
+ nan
+ nan
+-88
+-Explore
+-GPTs
++Add
++Search
++Functionality
+ nan
+-(image_folder,
+-video_name,
+-fps=1):
++Resize
++Image
++with
++PIL
++nan
++Tkinter
++Image
++Reference
++Fix
+--- img1
++++ img2
+@@ -1,34 +1,6 @@
+ nan
+ nan
+ nan
+-User
+-Behavior
+-Analysis
+-«
+-8
+-nan
+-Action
+-Recommendation
+-Syster
+-.
+-.
+-.
+-.
+-.
+-.
+-.
+-nan
+-nan
+-out
+-=
+-cv2.VideoWriter(video_name,
+-cv2.VideoWriter_fource(*
+-'mp
+-),
+-fps,
+-frame_siq
+-nan
+-Fix
+-Python
+-script
+-issues
++Thumbnail
++Memory
++Managemer
+--- img1
++++ img2
+@@ -1,9 +1,67 @@
+ nan
+ nan
+ nan
+-tamp
++Cleaning
++Products
++List.
+ nan
+ Capture
++Request
++with
++Models
++nan
++Dinner
++at
++Cheztakos!
++nan
++nan
++OCR
++Data
++Analysis
++nan
++nan
++Chat
++para
++asistencia
++técnica
++nan
++Macrocom
++project
++update.
++nan
++Cerca
++immagini
++con
++parole
++chia\
++nan
++Search
++GUI
++Visibility
++Fix
++nan
++Simple
++Python
++Search
++App
++nan
++Image
++Search
++GUI
++Python
++nan
++Python
++Tkinter
++App
++nan
++nan
++Python
++App:
++Search
++&
++Preview
++nan
++Get
+ Active
+-Window
+-Screens
++App
++PID
+--- img1
++++ img2
+@@ -1,10 +1,7 @@
+ nan
+ nan
+ nan
+-images
+-=
+-[img
+-for
+-img
+-in
+-natsorted(glob.glob(f
++Capture
++Active
++Window
++Screens
+--- img1
++++ img2
+@@ -1,18 +1,9 @@
+ nan
+ nan
+ nan
+-Imagem
+-exibigdo
+-botées
+-corrigic
+++t
++Add
++Team
++workspace
+ nan
+-¢
+-image
+-in
+-images:
+-nan
+-frame
+-=
+-cv2.imread(os.path.join(image_folder,
+-image)
+-)
++4
+--- img1
++++ img2
+@@ -1,20 +1,7 @@
+ nan
+ nan
+ nan
+-Add
+-Search
+-Functionality
+-nan
+-Resize
+-Image
+-with
+-PIL
+-nan
+-Tkinter
+-Image
+-Reference
+-Fix
+-frame
+-=
+-cv2.resize(frame,
+-frame_size)
++eo
++Ka
++Ho
++Wu
+--- img1
++++ img2
+@@ -1,7 +1,4 @@
+ nan
+ nan
+ nan
+-Thumbnail
+-Memory
+-Managemer
+-out.write(frame)
++frame_size
+--- img1
++++ img2
+@@ -1,4 +1,9 @@
+ nan
+ nan
+ nan
+-out.release()
++out
++=
++cv2.VideoWriter(video_name,
++cv2.VideoWriter_fourcc(*'mp4v'),
++fps,
++frame_siq
+--- img1
++++ img2
+@@ -1,5 +1,13 @@
+ nan
+ nan
+ nan
+-print
+-(£
++images
++=
++[img
++img
++in
++natsorted(glob.glob(£"{
++nan
++image
++in
++images:
+--- img1
++++ img2
+@@ -1,6 +1,11 @@
+ nan
+ nan
+ nan
+-Cleaning
+-Products
+-List.
++frame
++=
++cv2.imread(os.path.join(image_folder,
++image)
++)
++nan
++£
++frame
+--- img1
++++ img2
+@@ -1,7 +1,7 @@
+ nan
+ nan
+ nan
+-Capture
+-Request
+-with
+-Models
++frame
++=
++cv2.resize(frame,
++frame_size)
+--- img1
++++ img2
+@@ -1,25 +1,10 @@
+ nan
+ nan
+ nan
+-Dinner
+-at
+-Cheztakos!
+-grouped_images
+-=
+-{}
++out
++.write
++(frame)
+ nan
+-OCR
+-Data
+-Analysis
+-ane
+-an
+-the
+-£6
++out.xrelease()
+ nan
+-Chat
+-para
+-asistencia
+-técnica
+-all_images
+-=
+-glob.glob(f"{im
++print(f
+--- img1
++++ img2
+@@ -1,12 +1,4 @@
+ nan
+ nan
+ nan
+--
+-image_path
+-in
+-all_images:
+-nan
+-Macrocom
+-project
+-update.
+-Ho
++grouped_images
+--- img1
++++ img2
+@@ -1,16 +1,6 @@
+ nan
+ nan
+ nan
+-Cerca
+-immagini
+-con
+-parole
+-chia\
+-app_name
++all_images
+ =
+-os.path.basename(image_path).split('_')[0]
+-nan
+-if
+-app_name
+-in
+-grouped_images:
++glob.glob(£"{im
+--- img1
++++ img2
+@@ -1,10 +1,21 @@
+ nan
+ nan
+ nan
+-Search
+-GUI
+-Visibility
+-Fix
++for
++image_path
++in
++all_images:
++nan
++nan
++app_name
++=
++os.path.basename(image_path).split('_')[0]
++nan
++app_name
++not
++in
++grouped_images:
++nan
+ grouped_images[app_name]
+ =
+ []
+--- img1
++++ img2
+@@ -1,11 +1,4 @@
+ nan
+ nan
+ nan
+-Simple
+-Python
+-Search
+-App
+-grouped_images[app_name]
+-.
+-append
+-(image_path)
++grouped_images[app_name].append(image_path)
+--- img1
++++ img2
+@@ -1,7 +1,17 @@
+ nan
+ nan
+ nan
+-Image
+-Search
+-GUI
+-Python
++for
++each
++apy
++nan
++r
++app_name,
++images
++in
++grouped_images.items():
++nan
++video_name
++=
++os.path.join(image_folder,
++f"{app_
+--- img1
++++ img2
+@@ -1,16 +1,6 @@
+ nan
+ nan
+ nan
+-Python
+-Tkinter
+-App
+-r
+-app_name,
+-images
+-in
+-grouped_images.items():
+-nan
+-video_name
+-=
+-os.path.join(image_folder,
+-f
++create_video_from_images(image_folder,
++video_name,
++fps=fps)
+--- img1
++++ img2
+@@ -1,11 +1,5 @@
+ nan
+ nan
+ nan
+-Python
+-App:
+-Search
+-&
+-Preview
+-create_video_from_images(image_folder,
+-video_name,
+-fps=fps)
++image_folder
++=
+--- img1
++++ img2
+@@ -1,9 +1,4 @@
+ nan
+ nan
+ nan
+-Get
+-Active
+-App
+-PID
+-nan
+-Usage
++group_and_create_videos(image_folder)
+--- img1
++++ img2
+@@ -1,8 +1,3 @@
+ nan
+ nan
+ nan
+-Capture
+-Active
+-Window
+-Screens
+-image_folder
+--- img1
++++ img2
+@@ -1,6 +1,4 @@
+ nan
+ nan
+ nan
+-group_and_create_videos(
+-inage
+-£01)
++Explanation:
+--- img1
++++ img2
+@@ -1,3 +1,65 @@
+ nan
+ nan
+ nan
++Video
++Creation:
++The
++*create_video_from_images~
++function
++reads
++images
++from
++a
++specified
++folder,
++nan
++resizes
++them
++to
++acommon
++dimension,
++and
++writes
++them
++into
++a
++video
++file.
++It
++assumes
++all
++images
++for
++a
++nan
++single
++video
++are
++in
++the
++same
++format
++and
++that
++the
++directory
++contains
++only
++relevant
++images.
++nan
++nan
++Grouping
++Images:
++The
++*group_and_creat
++di
++~ideos*
++function
++scans
++all
++images
++in
++a
++directory,
++groups
+--- img1
++++ img2
+@@ -1,9 +1,15 @@
+ nan
+ nan
+ nan
+-+t
+-Add
+-Team
+-workspace
+-nan
+-4
++them
++by
++the
++application
++name
++extracted
++from
++the
++filename,
++and
++then
++calls
+--- img1
++++ img2
+@@ -1,9 +1,3 @@
+ nan
+ nan
+ nan
+-eo
+-Ka
+-Ho
+-Wu
+-nan
+-2
+--- img1
++++ img2
+@@ -1,3 +1,4 @@
+ nan
+ nan
+ nan
++ob

@@ -103,7 +103,9 @@ def search_keyword(keyword, screenshot_directory="entire_screenshot", screenshot
 
     # sort the files in the directory by creation time
     files = os.listdir(screenshot_directory)
-    files.sort(key=lambda x: os.path.getctime(os.path.join(screenshot_directory, x)))
+
+    # sort the files by creation time, from newest to oldest
+    files.sort(key=lambda x: os.path.getctime(os.path.join(screenshot_directory, x)), reverse=True)
 
     # print (files)
     

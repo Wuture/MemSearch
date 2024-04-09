@@ -193,10 +193,10 @@ def main():
         # process_active_window_screenshot()
 
         # Process the entire screen screenshot
-        # process_entire_screenshot()
+        process_entire_screenshot()
 
         # Process both active window and entire screen screenshot
-        process_screenshot()
+        # process_screenshot()
 
         # Wait for 5 seconds before taking the next screenshot
         time.sleep(5)
