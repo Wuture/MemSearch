@@ -1,0 +1,1 @@
+# Tracks usage of all applications on MacOS. 

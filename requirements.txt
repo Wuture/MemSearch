@@ -1,0 +1,8 @@
+Pillow
+PyAutoGUI
+pyobjc_framework_Cocoa
+pyobjc_framework_Quartz
+PyQt5
+PyQt5_sip
+pytesseract
+pyobjc

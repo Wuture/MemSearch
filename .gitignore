@@ -1,0 +1,8 @@
+.DS_Store
+usage_data
+*.jpg
+entire_screenshot/
+entire_screenshot_metadata/
+__pycache__
+active_window_screenshot/
+active_window_screenshot_metadata/
