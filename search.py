@@ -2,6 +2,8 @@ from PIL import Image
 from PIL import ImageDraw
 import os
 import string
+import re
+from datetime import datetime
 
 # Function to find the coordinates of the target text in the OCR data
 def find_text_coordinates(metadata_file_path, target_text):
@@ -61,6 +63,27 @@ def draw_box_on_image(image_path, coordinate_list):
     return img
 
 
+def get_app_info (file_name):
+    # Regex pattern to extract the date and time
+    pattern = r"(?P<software>\w+)_(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}) (?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})"
+
+    # Search for matches using the regex pattern
+    match = re.search(pattern, file_name)
+
+    # Extract information if a match is found
+    if match:
+        software = match.group("software")
+        date_str = f"{match.group('year')}-{match.group('month')}-{match.group('day')}"
+        time_str = f"{match.group('hour')}:{match.group('minute')}:{match.group('second')}"
+        # Convert date and time strings to datetime objects
+        date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        time = datetime.strptime(time_str, '%H:%M:%S').time()
+    else:
+        software, date, time = None, None, None
+
+    return [software, date, time]
+
+
 def search_keyword(keyword):
 
     labelled_images = []
@@ -75,18 +98,30 @@ def search_keyword(keyword):
     
     # Create a list to store the screenshot paths
     screenshot_paths = []
+
+    # app_info = []
+
+    # sort the files in the directory by creation time
+    files = os.listdir(screenshot_directory)
+    files.sort(key=lambda x: os.path.getctime(os.path.join(screenshot_directory, x)))
+
+    # print (files)
     
     # Iterate over the files in the screenshot directory
-    for filename in os.listdir(screenshot_directory):
+    for filename in files:
+        # print (filename)
         if filename.endswith(".jpg"):
             screenshot_path = os.path.join(screenshot_directory, filename)
             screenshot_paths.append(screenshot_path)
     
+
     # Iterate over the screenshot paths
     for screenshot_path in screenshot_paths:
         # Get the metadata file path corresponding to the screenshot
         metadata_file_path = os.path.join("entire_screenshot_metadata", os.path.basename(screenshot_path).replace(".jpg", ".txt"))
-
+        app_info = get_app_info(os.path.basename(screenshot_path).replace(".jpg", ""))
+        # print (app_info[0])
+        # print (app_info[2])
         # if the metadata file does not exist, skip the current iteration
         if not os.path.exists(metadata_file_path):
             continue
@@ -97,10 +132,15 @@ def search_keyword(keyword):
         # Draw a box around the keyword in the screenshot
         if coordinate_list:
             img_with_box = draw_box_on_image(screenshot_path, coordinate_list)
-            labelled_images.append(img_with_box)
+            complete_info = app_info + [img_with_box]
+            labelled_images.append(complete_info)
         else:
             # print(f"Keyword '{keyword}' not found in screenshot: {screenshot_path}")
             pass 
 
     
     return labelled_images
+
+
+search_keyword("memsearch")
+

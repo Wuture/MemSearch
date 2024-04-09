@@ -78,6 +78,12 @@ def compare_images(img1, img2):
 
 # Process the entire screen screenshot
 def process_entire_screenshot():
+    # Get the list of running applications
+    workspace = NSWorkspace.sharedWorkspace()
+    active_app_info = workspace.activeApplication()  # Get active application info
+    # get the list of running apps and the active app
+    active_app_name = active_app_info.get('NSApplicationName')
+
     directory = "entire_screenshot"
     metadata_directory = "entire_screenshot_metadata"
 
@@ -93,7 +99,8 @@ def process_entire_screenshot():
     entire_screenshot = pyautogui.screenshot()
 
     latest_file_path = get_latest_file(directory)
-    if latest_file_path:
+    # make sure its not .DS_Store file
+    if latest_file_path and not latest_file_path.endswith(".DS_Store"):
         latest_screenshot = Image.open(latest_file_path)
         similarity_score = compare_images(latest_screenshot, entire_screenshot)
         print (f"Similarity score: {similarity_score}")
@@ -102,7 +109,7 @@ def process_entire_screenshot():
             return
 
     # Save the entire screenshot as an image file named with current date and time
-    entire_screenshot_name = f"entire_screenshot/screenshot_{current_date}.jpg"
+    entire_screenshot_name = f"entire_screenshot/{active_app_name}_{current_date}.jpg"
 
     # # Convert the image from RGBA to RGB
     entire_screenshot = entire_screenshot.convert("RGB")
@@ -118,7 +125,7 @@ def process_entire_screenshot():
     entire_screenshot_data = pytesseract.image_to_data(entire_screenshot_image)
 
     # save the entire screenshot data into a text file into folder entire_screenshot_metadata
-    entire_screenshot_metadata = f"entire_screenshot_metadata/screenshot_{current_date}.txt"
+    entire_screenshot_metadata = f"entire_screenshot_metadata/{active_app_name}_{current_date}.txt"
 
     # Save the OCR data to a text file
     save_ocr_data_to_file(entire_screenshot_data, entire_screenshot_metadata)
