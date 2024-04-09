@@ -25,6 +25,21 @@ def schedule_analysis():
         schedule.run_pending()
         time.sleep(1)
 
+# analyze today's usage
+def analyze_today_usage():
+    # Get the previous day's date
+    today = datetime.now().date()
+    today_str = today.strftime('%Y-%m-%d')
+    
+    # Construct the CSV file path for the previous day
+    csv_file_path = f'usage_data/{today_str}.csv'
+    summary_file_path = f'usage_data/{today_str}_summary.txt'
+    
+    # Call the analyze_usage_behavior function with the CSV file path
+    analyze_usage_behavior(csv_file_path, summary_file_path)
+
 analyze_previous_day_usage()
+analyze_today_usage()
+
 # Start scheduling the analysis
 # schedule_analysis()

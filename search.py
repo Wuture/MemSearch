@@ -84,12 +84,12 @@ def get_app_info (file_name):
     return [software, date, time]
 
 
-def search_keyword(keyword):
+def search_keyword(keyword, screenshot_directory="entire_screenshot", screenshot_metadata_directory="entire_screenshot_metadata"):
 
     labelled_images = []
 
     # Specify the directory containing the screenshots
-    screenshot_directory = "entire_screenshot"
+    # screenshot_directory = "entire_screenshot"
 
     # make sure the directory exists
     if not os.path.exists(screenshot_directory):
@@ -118,7 +118,7 @@ def search_keyword(keyword):
     # Iterate over the screenshot paths
     for screenshot_path in screenshot_paths:
         # Get the metadata file path corresponding to the screenshot
-        metadata_file_path = os.path.join("entire_screenshot_metadata", os.path.basename(screenshot_path).replace(".jpg", ".txt"))
+        metadata_file_path = os.path.join(screenshot_metadata_directory, os.path.basename(screenshot_path).replace(".jpg", ".txt"))
         app_info = get_app_info(os.path.basename(screenshot_path).replace(".jpg", ""))
         # print (app_info[0])
         # print (app_info[2])

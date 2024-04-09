@@ -36,12 +36,12 @@ def track_application_usage():
         last_active_app_start_time = None
         
         while True:
+            # Get the current timestamp
+            current_timestamp = datetime.now()
+            
             # Get the list of running applications
             workspace = NSWorkspace.sharedWorkspace()
             active_app_info = workspace.activeApplication()
-            
-            # Get the current timestamp
-            current_timestamp = datetime.now()
             
             # Get the active application name
             active_app_name = active_app_info.get('NSApplicationName')

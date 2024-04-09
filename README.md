@@ -18,6 +18,12 @@ To start using UtopiaOS MemSearch, execute the included shell script:
 ```
 This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
 
+By default, we will search through the entire screen. If you want to search through active windows, provide argument for the search_app.py, by typing "active" in prompt
+
+```bash
+python3 search_app.py
+```
+
 ## Components
 UtopiaOS MemSearch consists of several Python scripts, each serving a unique role in the system:
 
