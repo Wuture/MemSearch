@@ -7,16 +7,17 @@ To install the necessary dependencies for UtopiaOS MemSearch, run the following 
 
 ```bash
 pip install -r requirements.txt
-Ensure you have Python installed on your system to use pip. It is also recommended to use a virtual environment to manage the dependencies.
 ```
+Ensure you have Python installed on your system to use pip. It is also recommended to use a virtual environment to manage the dependencies.
 
 ## Usage
 To start using UtopiaOS MemSearch, execute the included shell script:
 
 ```bash
 ./run.sh
-This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
 ```
+This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
+
 ## Components
 UtopiaOS MemSearch consists of several Python scripts, each serving a unique role in the system:
 
