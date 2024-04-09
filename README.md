@@ -33,3 +33,6 @@ UtopiaOS MemSearch consists of several Python scripts, each serving a unique rol
 
 6. system_tracker.py: Tracks all open applications, marking each as active or dormant, thus providing a comprehensive view of your system's application usage over time.
 
+7. analyze_usage_behavior.py: Analyze user software usage on their computers.
+
+8. schedule_analysis.py: Schedule software usage analysis every day. 
