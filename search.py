@@ -140,7 +140,3 @@ def search_keyword(keyword):
 
     
     return labelled_images
-
-
-search_keyword("memsearch")
-

@@ -38,7 +38,7 @@ def process_active_window_screenshot():
 
     # ------ Active Window Screenshot ------
 
-    print (active_app_name + " is active\n")
+    # print (active_app_name + " is active\n")
 
     # Save the active window screenshot as an image file named with current date and time
     active_app_screenshot_name = f"active_screenshot/{active_app_name}_{current_date}.jpg"
@@ -66,7 +66,7 @@ def get_latest_file(directory):
     if not files:  # Check if the list is empty
         return None
     latest_file = max(files, key=os.path.getctime)
-    print (latest_file)
+    # print (latest_file)
     return latest_file
 
 def compare_images(img1, img2):
@@ -103,9 +103,9 @@ def process_entire_screenshot():
     if latest_file_path and not latest_file_path.endswith(".DS_Store"):
         latest_screenshot = Image.open(latest_file_path)
         similarity_score = compare_images(latest_screenshot, entire_screenshot)
-        print (f"Similarity score: {similarity_score}")
-        if similarity_score > 0.95:
-            print("No significant changes detected, not saving this screenshot.")
+        # print (f"Similarity score: {similarity_score}")
+        if similarity_score > 0.9:
+            # print("No significant changes detected, not saving this screenshot.")
             return
 
     # Save the entire screenshot as an image file named with current date and time

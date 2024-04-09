@@ -52,7 +52,6 @@ def track_application_usage():
                 if last_active_app is not None:
                     usage_time = current_timestamp - last_active_app_start_time
                     usage_status = [current_timestamp.strftime('%Y-%m-%d %H:%M:%S'), last_active_app, str(usage_time)]
-                    print(usage_status)
                     writer.writerow(usage_status)
                 
                 # Update the last active application and its start time

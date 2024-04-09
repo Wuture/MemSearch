@@ -152,6 +152,7 @@ class ImageGalleryApp(QMainWindow):
             
             thumbnail_size = (new_width, new_height)  # Using LANCZOS filter for high-quality downsampling
             original_img = img.copy()
+            # print (original_img)
             img.thumbnail(thumbnail_size, Image.LANCZOS)
             byte_array = io.BytesIO()
             img.save(byte_array, format='PNG')
@@ -165,7 +166,7 @@ class ImageGalleryApp(QMainWindow):
             btn.setFixedSize(*thumbnail_size)
             btn.setIcon(QIcon(qt_img))
             btn.setIconSize(qt_img.size())
-            btn.clicked.connect(lambda ch, img=img.copy(): self.show_image(original_img))
+            btn.clicked.connect(lambda ch, img=original_img: self.show_image(img))
 
             # Add the button to the QVBoxLayout within the image_widget
             image_layout.addWidget(btn, alignment=Qt.AlignCenter)
