@@ -56,51 +56,56 @@ def summerize (messages):
     with open(ai_summary_file_path, 'w') as file:
         file.write(ai_summary)
     
+    summary_file_path = f'usage_data/{today_str}_summary.txt'
+    with open(summary_file_path, 'r') as file:
+        summary = file.read()
+    
+    print ("The user has provided the following summary: ")
+    print (summary)
     print ("The AI has generated the following summary: ")
     print (ai_summary)
     print ("\n")
     return messages
 
 if __name__ == '__main__':
-
     analyze_today_usage()
-#     messages = []
-#     # add system prompts to the messages
-#     messages.append(
-#         {
-#             "role": "system",
-#             "content": "You are an expert at analyzing usage behavior. Summarize the daily usage behavior of the user based on the data collected, be as detailed as possible. The summary should include the apps used, the time spent on each app, the number of times each app was used, and any other relevant information.",
-#         }
-#     )
-#     messages = summerize(messages)
+    messages = []
+    # add system prompts to the messages
+    messages.append(
+        {
+            "role": "system",
+            "content": "You are an expert at analyzing usage behavior. Summarize the daily usage behavior of the user based on the data collected, be as detailed as possible. The summary should include the apps used, the time spent on each app, the number of times each app was used, and any other relevant information.",
+        }
+    )
+    messages = summerize(messages)
 
 
-#     # Now allow the user to ask questions about the summary
-#     print ("-"*10 + "You can now ask questions about the summary" + "-"*10)
-#     # print ("You can now ask questions about the summary.")
-#     while True:
-#         user_input = input("You: ")
-#         if user_input.lower() == 'exit':
-#             break
-#         # Generate a response to the user's question
-#         # add user input to the messages
-#         messages.append(
-#             {
-#                 "role": "user",
-#                 "content": user_input,
-#             }
-#         )
-#         completion = client.chat.completions.create(
-#             model="gpt-4",
-#             messages=messages,
-#         )
-#         response = completion.choices[0].message.content
-#         print("AI: " + response)
+    # Now allow the user to ask questions about the summary
+    print ("-"*10 + "You can now ask questions about the summary" + "-"*10)
+    # print ("You can now ask questions about the summary.")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == 'exit':
+            break
+        # Generate a response to the user's question
+        # add user input to the messages
+        messages.append(
+            {
+                "role": "user",
+                "content": user_input,
+            }
+        )
+        completion = client.chat.completions.create(
+            model="gpt-4",
+            messages=messages,
+        )
+        response = completion.choices[0].message.content
+        print("AI: " + response)
 
-#         # add the response to the messages
-#         messages.append(
-#             {
-#                 "role": "assistant",
-#                 "content": response,
-#             }
-#         )
+        # add the response to the messages
+        messages.append(
+            {
+                "role": "assistant",
+                "content": response,
+            }
+        )
