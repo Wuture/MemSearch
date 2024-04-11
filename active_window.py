@@ -1,9 +1,6 @@
 import Quartz
 import pyautogui
-import psutil
 from AppKit import NSWorkspace
-from datetime import datetime
-from time import sleep
 
 # screenshot based on the active window
 def screenshot (window):

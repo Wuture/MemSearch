@@ -1,5 +1,3 @@
-import openai
-import os
 from openai import OpenAI
 from datetime import datetime
 from analyze_usage_behavior import analyze_usage_behavior
@@ -67,6 +65,7 @@ def summerize (messages):
 
 if __name__ == '__main__':
     analyze_today_usage()
+    
     messages = []
     # add system prompts to the messages
     messages.append(
@@ -80,8 +79,12 @@ if __name__ == '__main__':
 
     # Now allow the user to ask questions about the summary
     print ("-"*10 + "You can now ask questions about the summary" + "-"*10)
+
     # print ("You can now ask questions about the summary.")
     while True:
+        current_timestamp = datetime.now().strftime('%H:%M:%S')
+
+        time_message = "Right now the time is " + current_timestamp + ". "
         user_input = input("You: ")
         if user_input.lower() == 'exit':
             break
@@ -90,7 +93,7 @@ if __name__ == '__main__':
         messages.append(
             {
                 "role": "user",
-                "content": user_input,
+                "content":  user_input,
             }
         )
         completion = client.chat.completions.create(
@@ -100,6 +103,7 @@ if __name__ == '__main__':
         response = completion.choices[0].message.content
         print("AI: " + response)
 
+        # 
         # add the response to the messages
         messages.append(
             {

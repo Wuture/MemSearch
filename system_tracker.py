@@ -1,7 +1,7 @@
 import time
 import csv
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from AppKit import NSWorkspace
 
 def is_user_application(app):
