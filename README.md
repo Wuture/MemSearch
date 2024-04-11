@@ -24,6 +24,13 @@ By default, we will search through the entire screen. If you want to search thro
 python3 search_app.py
 ```
 
+To search, just type in any keyword:
+![General Search](examples/general.png)
+
+To do app search, please type in name of the app, follow by ": ", and then keyword. e.g. "Arc: No country for old man". 
+![App Search](examples/app%20search.png)
+
+
 ## Components
 UtopiaOS MemSearch consists of several Python scripts, each serving a unique role in the system:
 
@@ -43,4 +50,4 @@ UtopiaOS MemSearch consists of several Python scripts, each serving a unique rol
 
 8. schedule_analysis.py: Schedule software usage analysis every day. 
 
-9. daily_summary: generate an AI report of user's usage today. User could proceed to ask questions about his daily routines. 
+9. daily_summary.py: generate an AI report of user's usage today. User could proceed to ask questions about his daily routines. 
