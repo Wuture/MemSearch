@@ -42,3 +42,5 @@ UtopiaOS MemSearch consists of several Python scripts, each serving a unique rol
 7. analyze_usage_behavior.py: Analyze user software usage on their computers.
 
 8. schedule_analysis.py: Schedule software usage analysis every day. 
+
+9. daily_summary: generate an AI report of user's usage today. User could proceed to ask questions about his daily routines. 
