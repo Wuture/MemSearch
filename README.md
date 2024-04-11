@@ -14,14 +14,12 @@ To install the necessary dependencies for UtopiaOS MemSearch, run the following 
 3. Activate the virtual environment:
    - On macOS and Linux:
 ```bash
-     source myenv/bin/activate
+source myenv/bin/activate
 ```
-   - On Windows:
-     myenv\Scripts\activate.bat
 
 4. Install the required packages:
 ```bash
-    pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 Ensure you have Python installed on your system to use pip. It is also recommended to use a virtual environment to manage the dependencies.
 
