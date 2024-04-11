@@ -22,9 +22,13 @@ def track_application_usage():
     
     # Create a directory for storing CSV files (if it doesn't exist)
     os.makedirs('usage_data', exist_ok=True)
+
+    data_path = f'usage_data/{current_date}/'
+    # Create a directory for today's data 
+    os.makedirs(data_path,exist_ok=True)
     
     # Open the CSV file for the current date in append mode
-    csv_file_path = f'usage_data/{current_date}.csv'
+    csv_file_path =  os.path.join (data_path, f'{current_date}_usage.csv')
     with open(csv_file_path, 'a', newline='') as file:
         writer = csv.writer(file)
         # Write the header row if the file is empty

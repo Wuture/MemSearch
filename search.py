@@ -3,7 +3,7 @@ from PIL import ImageDraw
 import os
 import string
 import re
-from datetime import datetime
+from datetime import datetime, date
 
 # Function to find the coordinates of the target text in the OCR data
 def find_text_coordinates(metadata_file_path, target_text):
@@ -91,6 +91,12 @@ def search_keyword(keyword, screenshot_directory="entire_screenshot", screenshot
     # Specify the directory containing the screenshots
     # screenshot_directory = "entire_screenshot"
 
+    #  # Get the current date
+    current_date = date.today()
+
+    screenshot_directory = f'{screenshot_directory}/{current_date}'
+    screenshot_metadata_directory = f'{screenshot_metadata_directory}/{current_date}'
+
     # make sure the directory exists
     if not os.path.exists(screenshot_directory):
         print(f"Directory '{screenshot_directory}' does not exist.")
@@ -108,24 +114,40 @@ def search_keyword(keyword, screenshot_directory="entire_screenshot", screenshot
     files.sort(key=lambda x: os.path.getctime(os.path.join(screenshot_directory, x)), reverse=True)
 
     # print (files)
+
+    app = None
+    # Narrow app search by ': ' expression'""
+    if ": " in keyword:
+        text = keyword.split(": ")
+        app = text[0]
+        keyword = text[1]
     
     # Iterate over the files in the screenshot directory
     for filename in files:
         # print (filename)
-        if filename.endswith(".jpg"):
+        if filename.endswith(".jpg") and app != None:
+            current_app = filename.split("_")[0]
+            if current_app == app: 
+                # print (current_app)
+                screenshot_path = os.path.join(screenshot_directory, filename)
+                screenshot_paths.append(screenshot_path)
+                # print (screenshot_paths)
+        else: 
             screenshot_path = os.path.join(screenshot_directory, filename)
             screenshot_paths.append(screenshot_path)
-    
 
     # Iterate over the screenshot paths
     for screenshot_path in screenshot_paths:
+        # print (screenshot_path)
         # Get the metadata file path corresponding to the screenshot
         metadata_file_path = os.path.join(screenshot_metadata_directory, os.path.basename(screenshot_path).replace(".jpg", ".txt"))
+
         app_info = get_app_info(os.path.basename(screenshot_path).replace(".jpg", ""))
         # print (app_info[0])
         # print (app_info[2])
         # if the metadata file does not exist, skip the current iteration
         if not os.path.exists(metadata_file_path):
+            # print ("Skip")
             continue
         
         # Find the coordinates of the keyword in the OCR data
@@ -135,10 +157,13 @@ def search_keyword(keyword, screenshot_directory="entire_screenshot", screenshot
         if coordinate_list:
             img_with_box = draw_box_on_image(screenshot_path, coordinate_list)
             complete_info = app_info + [img_with_box]
+            # print (complete_info)
             labelled_images.append(complete_info)
         else:
             # print(f"Keyword '{keyword}' not found in screenshot: {screenshot_path}")
             pass 
 
-    
+    # print (labelled_images)
     return labelled_images
+
+# search_keyword ("Messages: sehran")

@@ -10,6 +10,13 @@ from PIL import Image
 from active_window import get_active_window_screenshot
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
+from datetime import date
+
+active_screenshot_directory = "active_screenshot"
+entire_screenshot_directory = "entire_screenshot"
+active_screenshot_metadata_directory = "active_screenshot_metadata"
+entire_screenshot_metadata_directory = "entire_screenshot_metadata"
+
 
 # Perform OCR and save the data to a text file
 def save_ocr_data_to_file(data, file_path):
@@ -33,16 +40,22 @@ def compare_images(img1, img2):
     return score
 
 def process_active_window_screenshot():
-    directory = "active_screenshot"
-    metadata_directory = "active_screenshot_metadata"
-
+    directory = active_screenshot_directory
+    metadata_directory = active_screenshot_metadata_directory
     if not os.path.exists(directory):
         os.makedirs(directory)
     if not os.path.exists(metadata_directory):
         os.makedirs(metadata_directory)
 
-    # Get the current date and time
-    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # Current date
+    current_date = date.today()
+
+    # if current date folder don't exist, make them
+    os.makedirs(f'{active_screenshot_directory}/{current_date}', exist_ok=True)
+    os.makedirs(f'{active_screenshot_metadata_directory}/{current_date}', exist_ok=True)
+    
+    # Get the current time
+    current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Get active window screenshot
     active_window_screenshot, app_name, window_name = get_active_window_screenshot()
@@ -50,7 +63,7 @@ def process_active_window_screenshot():
     # convert to RGB
     screenshot = active_window_screenshot.convert("RGB")
     # save to active_screenshot folder
-    active_app_screenshot_name = f"active_screenshot/{app_name}_{current_date}.jpg"
+    active_app_screenshot_name = f"{active_screenshot_directory}/{current_date}/{app_name}_{current_datetime}.jpg"
     screenshot.save(active_app_screenshot_name, 'JPEG', optimize=True, quality=95)
 
     # Get the active window screenshot image
@@ -59,7 +72,7 @@ def process_active_window_screenshot():
     active_window_screenshot_data = pytesseract.image_to_data(active_window_screenshot_image)
 
     # save the active window screenshot data into a text file into folder active_screenshot_metadata
-    active_screenshot_metadata = f"active_screenshot_metadata/{app_name}_{current_date}.txt"
+    active_screenshot_metadata = f"{active_screenshot_metadata_directory}/{current_date}/{app_name}_{current_datetime}.txt"
 
     # Save the OCR data to a text file
     save_ocr_data_to_file(active_window_screenshot_data, active_screenshot_metadata)
@@ -72,21 +85,25 @@ def process_entire_screenshot():
     # get the list of running apps and the active app
     active_app_name = active_app_info.get('NSApplicationName')
 
-    directory = "entire_screenshot"
-    metadata_directory = "entire_screenshot_metadata"
+    if not os.path.exists(entire_screenshot_directory):
+        os.makedirs(entire_screenshot_directory)
+    if not os.path.exists(entire_screenshot_metadata_directory):
+        os.makedirs(entire_screenshot_metadata_directory)
 
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    if not os.path.exists(metadata_directory):
-        os.makedirs(metadata_directory)
+    #Get the current date
+    current_date = date.today()
 
-    # Get the current date and time
-    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # if current date folder don't exist, make them
+    os.makedirs(f'{entire_screenshot_directory}/{current_date}', exist_ok=True)
+    os.makedirs(f'{entire_screenshot_metadata_directory}/{current_date}', exist_ok=True)
+
+    # Get the current datetime
+    current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Capture screenshot of the screen
     entire_screenshot = pyautogui.screenshot()
 
-    latest_file_path = get_latest_file(directory)
+    latest_file_path = get_latest_file(f'{entire_screenshot_directory}/{current_date}')
     # make sure its not .DS_Store file
     if latest_file_path and not latest_file_path.endswith(".DS_Store"):
         latest_screenshot = Image.open(latest_file_path)
@@ -97,7 +114,7 @@ def process_entire_screenshot():
             return
 
     # Save the entire screenshot as an image file named with current date and time
-    entire_screenshot_name = f"entire_screenshot/{active_app_name}_{current_date}.jpg"
+    entire_screenshot_name = f"{entire_screenshot_directory}/{current_date}/{active_app_name}_{current_datetime}.jpg"
 
     # # Convert the image from RGBA to RGB
     entire_screenshot = entire_screenshot.convert("RGB")
@@ -113,7 +130,7 @@ def process_entire_screenshot():
     entire_screenshot_data = pytesseract.image_to_data(entire_screenshot_image)
 
     # save the entire screenshot data into a text file into folder entire_screenshot_metadata
-    entire_screenshot_metadata = f"entire_screenshot_metadata/{active_app_name}_{current_date}.txt"
+    entire_screenshot_metadata = f"{entire_screenshot_metadata_directory}/{current_date}/{active_app_name}_{current_datetime}.txt"
 
     # Save the OCR data to a text file
     save_ocr_data_to_file(entire_screenshot_data, entire_screenshot_metadata)
@@ -121,11 +138,6 @@ def process_entire_screenshot():
 
 # process both active window and entire screen screenshot
 def process_screenshot ():
-    active_screenshot_directory = "active_screenshot"
-    entire_screenshot_directory = "entire_screenshot"
-    active_screenshot_metadata_directory = "active_screenshot_metadata"
-    entire_screenshot_metadata_directory = "entire_screenshot_metadata"
-
     # Check if they exist, if not create them
     if not os.path.exists(active_screenshot_directory):
         os.makedirs(active_screenshot_directory)
@@ -135,15 +147,25 @@ def process_screenshot ():
         os.makedirs(active_screenshot_metadata_directory)
     if not os.path.exists(entire_screenshot_metadata_directory):
         os.makedirs(entire_screenshot_metadata_directory)
+
+    # Get the current date
+    current_date = date.today()
+
+    # if current date folder don't exist, make them
+    os.makedirs(f'{active_screenshot_directory}/{current_date}', exist_ok=True)
+    os.makedirs(f'{entire_screenshot_directory}/{current_date}', exist_ok=True)
+    os.makedirs(f'{active_screenshot_metadata_directory}/{current_date}', exist_ok=True)
+    os.makedirs(f'{entire_screenshot_metadata_directory}/{current_date}', exist_ok=True)
+
     
     # Get the current date and time
-    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Capture screenshot of the entire screen
     entire_screenshot = pyautogui.screenshot()
 
     # See if there is a significant change in the entire screenshot
-    latest_file_path = get_latest_file(entire_screenshot_directory)
+    latest_file_path = get_latest_file(f'{entire_screenshot_directory}/{current_date}')
     # make sure its not .DS_Store file
     if latest_file_path and not latest_file_path.endswith(".DS_Store"):
         latest_screenshot = Image.open(latest_file_path)
@@ -161,8 +183,8 @@ def process_screenshot ():
     active_window_screenshot = active_window_screenshot.convert("RGB")
 
     # Save the entire screenshot and active window screenshot as an image file named with current date and time
-    entire_screenshot_name = f"{entire_screenshot_directory}/{app_name}_{current_date}.jpg"
-    active_window_screenshot_name = f"{active_screenshot_directory}/{app_name}_{current_date}.jpg"
+    entire_screenshot_name = f"{entire_screenshot_directory}/{current_date}/{app_name}_{current_datetime}.jpg"
+    active_window_screenshot_name = f"{active_screenshot_directory}/{current_date}/{app_name}_{current_datetime}.jpg"
 
     # Save the entire screenshot and active window screenshot
     entire_screenshot.save(entire_screenshot_name, 'JPEG', optimize=True, quality=50)
@@ -177,8 +199,8 @@ def process_screenshot ():
     active_window_screenshot_data = pytesseract.image_to_data(active_window_screenshot_image)
 
     # save the entire screenshot and active window screenshot data into a text file into folder entire_screenshot_metadata and active_screenshot_metadata
-    entire_screenshot_metadata = f"{entire_screenshot_metadata_directory}/{app_name}_{current_date}.txt"
-    active_screenshot_metadata = f"{active_screenshot_metadata_directory}/{app_name}_{current_date}.txt"
+    entire_screenshot_metadata = f"{entire_screenshot_metadata_directory}/{current_date}/{app_name}_{current_datetime}.txt"
+    active_screenshot_metadata = f"{active_screenshot_metadata_directory}/{current_date}/{app_name}_{current_datetime}.txt"
 
     # Save the OCR data to a text file
     save_ocr_data_to_file(entire_screenshot_data, entire_screenshot_metadata)

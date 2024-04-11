@@ -11,19 +11,20 @@ client = OpenAI()
 # Get the previous day's date
 today = datetime.now().date()
 today_str = today.strftime('%Y-%m-%d')
+
+# Construct the CSV file path for the previous day
+csv_file_path = f'usage_data/{today_str}/{today_str}_usage.csv'
+summary_file_path = f'usage_data/{today_str}/{today_str}_summary.txt'
+ai_summary_file_path = f'usage_data/{today_str}/{today_str}_ai_summary.txt'
+
+
 # analyze today's usage
 def analyze_today_usage():
-    
-    # Construct the CSV file path for the previous day
-    csv_file_path = f'usage_data/{today_str}.csv'
-    summary_file_path = f'usage_data/{today_str}_summary.txt'
     
     # Call the analyze_usage_behavior function with the CSV file path
     analyze_usage_behavior(csv_file_path, summary_file_path)
 
 def summerize (messages):
-    # open up the summary file and read the content
-    summary_file_path = f'usage_data/{today_str}_summary.txt'
     with open(summary_file_path, 'r') as file:
         summary = file.read()
 
@@ -51,12 +52,9 @@ def summerize (messages):
         }
     )
 
-    # write the AI summary to a file
-    ai_summary_file_path = f'usage_data/{today_str}_ai_summary.txt'
     with open(ai_summary_file_path, 'w') as file:
         file.write(ai_summary)
     
-    summary_file_path = f'usage_data/{today_str}_summary.txt'
     with open(summary_file_path, 'r') as file:
         summary = file.read()
     

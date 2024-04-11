@@ -76,8 +76,9 @@ if __name__ == "__main__":
     # Usage example
     # image folder is entire_screenshot
     # output folder is output_videos
-    image_folder = 'entire_screenshot/'  # Update this to the folder containing your images
+    image_folder = 'entire_screenshot/' + str(today) + '/' # Update this to the folder containing your images
     output_folder = 'output_videos/'  # Update this to where you want your videos saved
+
 
     # if output folder does not exist, create it
     if not os.path.exists(output_folder):

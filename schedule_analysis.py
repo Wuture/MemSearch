@@ -10,8 +10,8 @@ def analyze_previous_day_usage():
     previous_day_str = previous_day.strftime('%Y-%m-%d')
     
     # Construct the CSV file path for the previous day
-    csv_file_path = f'usage_data/{previous_day_str}.csv'
-    summary_file_path = f'usage_data/{previous_day_str}_summary.txt'
+    csv_file_path = f'usage_data/{previous_day_str}/{previous_day_str}.csv'
+    summary_file_path = f'usage_data/{previous_day_str}/{previous_day_str}_summary.txt'
     
     # Call the analyze_usage_behavior function with the CSV file path
     analyze_usage_behavior(csv_file_path, summary_file_path)
@@ -28,3 +28,5 @@ def schedule_analysis():
 
 # Start scheduling the analysis
 # schedule_analysis()
+
+analyze_previous_day_usage()
