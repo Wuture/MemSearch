@@ -8,7 +8,7 @@ To install the necessary dependencies for UtopiaOS MemSearch, run the following 
 1. Clone the repository
 2. Create a virtual environment:
 ```bash
-   python -m venv MemSearch
+python -m venv MemSearch
 ```
 
 3. Activate the virtual environment (MacOS)
