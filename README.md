@@ -40,14 +40,12 @@ UtopiaOS MemSearch consists of several Python scripts, each serving a unique rol
 
 3. search.py: Contains the search functions used by the application to identify keywords and retrieve relevant results from your OS history.
 
-4. search_and_save_pdf.py: This utility allows you to perform searches and compile the results into a PDF document, providing a tangible output for your search queries.
+4. active_window.py: Focuses on capturing screenshots of the active window rather than the entire screen. Note: This script currently has bugs and is pending fixes.
 
-5. active_window_tracker.py: Focuses on capturing screenshots of the active window rather than the entire screen. Note: This script currently has bugs and is pending fixes.
+5. system_tracker.py: Tracks all open applications, marking each as active or dormant, thus providing a comprehensive view of your system's application usage over time.
 
-6. system_tracker.py: Tracks all open applications, marking each as active or dormant, thus providing a comprehensive view of your system's application usage over time.
+6. analyze_usage_behavior.py: Analyze user software usage on their computers.
 
-7. analyze_usage_behavior.py: Analyze user software usage on their computers.
+7. schedule_analysis.py: Schedule software usage analysis every day. 
 
-8. schedule_analysis.py: Schedule software usage analysis every day. 
-
-9. daily_summary.py: generate an AI report of user's usage today. User could proceed to ask questions about his daily routines. 
+8. daily_summary.py: generate an AI report of user's usage today. User could proceed to ask questions about his daily routines. 
