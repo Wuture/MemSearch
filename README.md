@@ -5,8 +5,23 @@ UtopiaOS MemSearch enhances your MacOS experience by providing a powerful capabi
 ## Installation
 To install the necessary dependencies for UtopiaOS MemSearch, run the following command:
 
+1. Clone the repository
+2. Create a virtual environment:
 ```bash
-pip install -r requirements.txt
+   python -m venv MemSearch
+```
+
+3. Activate the virtual environment:
+   - On macOS and Linux:
+```bash
+     source myenv/bin/activate
+```
+   - On Windows:
+     myenv\Scripts\activate.bat
+
+4. Install the required packages:
+```bash
+    pip install -r requirements.txt
 ```
 Ensure you have Python installed on your system to use pip. It is also recommended to use a virtual environment to manage the dependencies.
 
@@ -18,7 +33,7 @@ To start using UtopiaOS MemSearch, execute the included shell script:
 ```
 This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
 
-By default, we will search through the entire screen. If you want to search through active windows, provide argument for the search_app.py, by typing "active" in prompt
+By default, we will search through the entire screen. If you want to search through active windows, provide argument for the search_app.py, by typing "active" in prompt. To start the MemSearch Python app, simply type:
 
 ```bash
 python3 search_app.py
