@@ -13,7 +13,7 @@ python -m venv MemSearch
 
 3. Activate the virtual environment (MacOS)
 ```bash
-source myenv/bin/activate
+source MemSearch/bin/activate
 ```
 
 4. Install the required packages:
