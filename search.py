@@ -121,12 +121,16 @@ def search_keyword(keyword, screenshot_directory="entire_screenshot", screenshot
         text = keyword.split(": ")
         app = text[0]
         keyword = text[1]
+
+    white_list = ["python3", "Preview"]
     
     # Iterate over the files in the screenshot directory
     for filename in files:
         # print (filename)
+        current_app = filename.split("_")[0]
+        if current_app in white_list:
+            continue
         if filename.endswith(".jpg") and app != None:
-            current_app = filename.split("_")[0]
             if current_app == app: 
                 # print (current_app)
                 screenshot_path = os.path.join(screenshot_directory, filename)

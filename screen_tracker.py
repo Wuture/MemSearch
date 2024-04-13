@@ -17,6 +17,8 @@ entire_screenshot_directory = "entire_screenshot"
 active_screenshot_metadata_directory = "active_screenshot_metadata"
 entire_screenshot_metadata_directory = "entire_screenshot_metadata"
 
+# Skip these applications when processing screenshots
+white_list = ["python3", "Preview"]
 
 # Perform OCR and save the data to a text file
 def save_ocr_data_to_file(data, file_path):
@@ -109,7 +111,7 @@ def process_entire_screenshot():
         latest_screenshot = Image.open(latest_file_path)
         similarity_score = compare_images(latest_screenshot, entire_screenshot)
         # print (f"Similarity score: {similarity_score}")
-        if similarity_score > 0.9:
+        if similarity_score > 0.8:
             # print("No significant changes detected, not saving this screenshot.")
             return
 

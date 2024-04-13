@@ -4,6 +4,8 @@ import sys
 from PIL import Image
 import io
 from PyQt5.QtGui import QImage, QPixmap, QIcon
+import tempfile
+import subprocess
 
 from search import search_keyword
 
@@ -129,50 +131,59 @@ class ImageGalleryApp(QMainWindow):
         image_objects = search_keyword(keyword, screenshot_directory=directory_type, screenshot_metadata_directory=directory_type + "_metadata")
         self.update_gallery(image_objects)
 
-    def show_image(self, img):
-            # Get the original dimensions
-            original_width, original_height = img.size
+    # def show_image(self, img):
+    #         # Get the original dimensions
+    #         original_width, original_height = img.size
 
-            # if the directory is entire_screenshot, resize the image to 40% of the original size
-            if self.directory_type == "entire_screenshot":
-                new_width = int(original_width * 0.40)
-                new_height = int(original_height * 0.40)
-            else:
-                new_width = original_width
-                new_height = original_height
+    #         # if the directory is entire_screenshot, resize the image to 40% of the original size
+    #         if self.directory_type == "entire_screenshot":
+    #             new_width = int(original_width * 0.40)
+    #             new_height = int(original_height * 0.40)
+    #         else:
+    #             new_width = original_width
+    #             new_height = original_height
 
-            # Resize the image
-            img = img.resize((new_width, new_height), Image.LANCZOS)  # Using LANCZOS filter for high-quality downsampling
+    #         # Resize the image
+    #         img = img.resize((new_width, new_height), Image.LANCZOS)  # Using LANCZOS filter for high-quality downsampling
 
-            # Convert PIL Image to QImage
-            img_byte_array = io.BytesIO()
-            img.save(img_byte_array, format='JPEG')
-            qimg = QImage()
-            qimg.loadFromData(img_byte_array.getvalue())
+    #         # Convert PIL Image to QImage
+    #         img_byte_array = io.BytesIO()
+    #         img.save(img_byte_array, format='JPEG')
+    #         qimg = QImage()
+    #         qimg.loadFromData(img_byte_array.getvalue())
 
-            # Convert QImage to QPixmap
-            pixmap = QPixmap.fromImage(qimg)
+    #         # Convert QImage to QPixmap
+    #         pixmap = QPixmap.fromImage(qimg)
 
-            # Create a new window to display the image
-            image_window = QMainWindow(self)
-            image_window.setWindowTitle("Image Viewer")
-            img_label = QLabel()
-            img_label.setPixmap(pixmap)
-            img_label.setAlignment(Qt.AlignCenter)
-            image_window.setCentralWidget(img_label)
-            image_window.resize(pixmap.size())
+    #         # Create a new window to display the image
+    #         image_window = QMainWindow(self)
+    #         image_window.setWindowTitle("Image Viewer")
+    #         img_label = QLabel()
+    #         img_label.setPixmap(pixmap)
+    #         img_label.setAlignment(Qt.AlignCenter)
+    #         image_window.setCentralWidget(img_label)
+    #         image_window.resize(pixmap.size())
             
-            # Center the image window on the screen
-            screen = QApplication.primaryScreen().geometry()
-            screen_width = screen.width()
-            screen_height = screen.height()
+    #         # Center the image window on the screen
+    #         screen = QApplication.primaryScreen().geometry()
+    #         screen_width = screen.width()
+    #         screen_height = screen.height()
 
-            # Calculate the center position
-            center_x = (screen_width - self.width()) // 2
-            center_y = (screen_height - self.height()) // 2
+    #         # Calculate the center position
+    #         center_x = (screen_width - self.width()) // 2
+    #         center_y = (screen_height - self.height()) // 2
 
-            image_window.move(center_x, center_y)
-            image_window.show()
+    #         image_window.move(center_x, center_y)
+    #         image_window.show()
+
+    # Simplified version of show_image method
+    def show_image(self, img):
+        # Save the image to a temporary file in memory
+        with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as temp_file:
+            img.save(temp_file, format='JPEG')
+
+            # Open the temporary file with the default application (Preview)
+            subprocess.run(["open", temp_file.name])
 
     def centerWindow(self):
         screen = QApplication.primaryScreen().geometry()
