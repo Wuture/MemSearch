@@ -1,22 +1,63 @@
 from pynput import keyboard
 import os
-from active_window import get_active_window_screenshot
+# from active_window import get_active_window_screenshot
 import base64
 import requests
 from io import BytesIO
 import pyautogui
 import json
 from openai import OpenAI
+import Quartz
+from AppKit import NSWorkspace
 
 client = OpenAI()
 
 # get openai api key from environment variable
 api_key = os.environ.get("OPENAI_API_KEY")
 
-# # Function to encode the image
-# def encode_image(image_path):
-#   with open(image_path, "rb") as image_file:
-#     return base64.b64encode(image_file.read()).decode('utf-8')
+# screenshot based on the active window
+def screenshot (window):
+    # Get the coordinates and dimensions of the active window
+    x = window['kCGWindowBounds']['X']
+    y = window['kCGWindowBounds']['Y']
+    width = window['kCGWindowBounds']['Width'] + 20
+    height = window['kCGWindowBounds']['Height'] + 20
+
+    app_name = window['kCGWindowOwnerName']
+    window_name = window['kCGWindowName']
+
+    # make them integers
+    x, y, width, height = int(x), int(y), int(width), int(height)
+
+    # Capture the active window
+    screenshot = pyautogui.screenshot(region=(x, y, width, height))
+    
+    # return the screenshot, app name, and window name
+    return screenshot, app_name, window_name
+
+
+# Get the active window and take a screenshot
+def get_active_window_screenshot ():
+    # Get the active window
+    options = Quartz.kCGWindowListOptionOnScreenOnly | Quartz.kCGWindowListExcludeDesktopElements
+    active_window_list = Quartz.CGWindowListCopyWindowInfo(options, Quartz.kCGNullWindowID)
+
+    # Get the list of running applications
+    workspace = NSWorkspace.sharedWorkspace()
+    active_app_info = workspace.activeApplication()
+
+    # Get the active application name
+    active_app_name = active_app_info.get('NSApplicationName')
+
+    # Iterate through all windows to find the active window
+    for window in active_window_list:
+        if window['kCGWindowOwnerName'] == active_app_name and window['kCGWindowName'] != '':
+            # screenshot based on the active window
+            results  = screenshot(window)
+            # print (window['kCGWindowOwnerName'])
+            return results 
+            
+
 
 # Example dummy function hard coded to return the same weather
 # In production, this could be your backend API or an external API
@@ -30,6 +71,32 @@ def get_current_weather(location, unit="fahrenheit"):
         return json.dumps({"location": "Paris", "temperature": "22", "unit": unit})
     else:
         return json.dumps({"location": location, "temperature": "unknown"})
+    
+# Set up the access token as an environment variable or directly in your script
+ACCESS_TOKEN = "YRe8osUdaAXDHq2auQpp3ifWukiy"
+
+# Function to call the external API for paraphrasing
+def paraphrase_text(text, plan="paid", prefer_gpt="gpt3", custom_style="", language="EN_US"):
+    url = "https://api-yomu-writer-470e5c0e3608.herokuapp.com/paraphrase"
+    headers = {
+        "accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {ACCESS_TOKEN}"
+    }
+    payload = json.dumps({
+        "text": text,
+        "plan": plan,
+        "prefer_gpt": prefer_gpt,
+        "custom_style": custom_style,
+        "language": language
+    })
+
+    response = requests.post(url, headers=headers, data=payload)
+    if response.status_code == 200:
+        return response.json()  # Return the JSON response from the API
+    else:
+        return {"error": "Failed to fetch data", "status_code": response.status_code}
+
     
 tools = [
         {
@@ -51,6 +118,42 @@ tools = [
             },
         }
     ]
+
+# Adding to the tools list
+tools.append(
+    {
+        "type": "function",
+        "function": {
+            "name": "paraphrase_text",
+            "description": "Paraphrases the provided text using an external API",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The text to be paraphrased"
+                    },
+                    "plan": {
+                        "type": "string",
+                        "enum": ["paid"]
+                    },
+                    "prefer_gpt": {
+                        "type": "string",
+                        "enum": ["gpt3"]
+                    },
+                    "custom_style": {
+                        "type": "string"
+                    },
+                    "language": {
+                        "type": "string",
+                        "enum": ["EN_US"]
+                    }
+                },
+                "required": ["text"]
+            }
+        }
+    }
+)
 
 # Function to encode the image
 def encode_image(image):
@@ -107,16 +210,21 @@ def send_to_gpt4v (image):
 
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
 
-    # # print (response)
-    print (response.json())
+    # print (response)
+    # print (response.json())
     # print (response.json()['choices'][0]['message']['tool_calls'])
 
     response_message = response.json()['choices'][0]['message']
-    # catch KeyError: 'tool_calls'
+    # print (response_message)
+    # print (response_message['tool_calls'])
+    # # catch KeyError: 'tool_calls'
     try:
         tool_calls = response_message['tool_calls']
     except KeyError:
         tool_calls = None
+    
+    # # print (tool_calls)
+    # # # print (tool_calls)
 
     if tool_calls:
         print ("Calling avaiable functions \n")
@@ -147,55 +255,13 @@ def send_to_gpt4v (image):
         # print (second_response)
         result = second_response.choices[0].message.content
     else: 
-        result = response.json()["choices"][0]["message"]["content"]
+        # result = response.json()["choices"][0]["message"]["content"]
+        result = response_message['content']
 
     print ("------------------------------------\n")
     print (result + "\n")
     prepare_imessage(result)
     print ("------------------------------------\n")
-
-
-    # # # ----- added ----
-    # # response_message = response.choices[0].message
-    # # tool_calls = response_message.tool_calls
-    # # Step 2: check if the model wanted to call a function
-    # if tool_calls:
-    #     # Step 3: call the function
-    #     # Note: the JSON response may not always be valid; be sure to handle errors
-    #     available_functions = {
-    #         "get_current_weather": get_current_weather,
-    #     }  # only one function in this example, but you can have multiple
-    #     messages.append(response_message)  # extend conversation with assistant's reply
-    #     # Step 4: send the info for each function call and function response to the model
-    #     for tool_call in tool_calls:
-    #         function_name = tool_call.function.name
-    #         function_to_call = available_functions[function_name]
-    #         function_args = json.loads(tool_call.function.arguments)
-    #         function_response = function_to_call(
-    #             location=function_args.get("location"),
-    #             unit=function_args.get("unit"),
-    #         )
-    #         messages.append(
-    #             {
-    #                 "tool_call_id": tool_call.id,
-    #                 "role": "tool",
-    #                 "name": function_name,
-    #                 "content": function_response,
-    #             }
-    #         )  # extend conversation with function response
-    #     second_response = client.chat.completions.create(
-    #         model="gpt-3.5-turbo-0125",
-    #         messages=messages,
-    #     )  # get a new response from the model where it can see the function response
-    #     # return second_response
-    #     print (second_response)
-    # ----- added ----
-
-    # result = response.json()["choices"][0]["message"]["content"]
-    # print ("------------------------------------\n")
-    # print (result + "\n")
-    # prepare_imessage(result)
-    # print ("------------------------------------\n")
 
 
 def prepare_imessage(message):
@@ -212,6 +278,9 @@ def on_activate():
 
     # compress the screenshot
     screenshot = screenshot.resize((screenshot.width // 2, screenshot.height // 2))
+
+    # show image in preview
+    screenshot.show()
     # save the screenshot in current directory
     # screenshot.save(f"{app_name}_{window_name}.png")
     # print(f"Screenshot taken and saved as {app_name}_{window_name}.png")
