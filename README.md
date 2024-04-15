@@ -34,7 +34,7 @@ chmod +x track.sh
 ```
 This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
 
-By default, we will search through the entire screen. If you want to search through active windows, provide argument for the search_app.py, by typing "active" in prompt. To start the MemSearch Python app, simply type:
+By default, we will search through the entire screen. If you want to search through active windows. To start the MemSearch Python app, simply type:
 
 ```bash
 chmod +x search.sh
