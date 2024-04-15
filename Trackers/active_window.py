@@ -1,0 +1,46 @@
+import Quartz
+import pyautogui
+from AppKit import NSWorkspace
+
+# screenshot based on the active window
+def screenshot (window):
+    # Get the coordinates and dimensions of the active window
+    x = window['kCGWindowBounds']['X']
+    y = window['kCGWindowBounds']['Y']
+    width = window['kCGWindowBounds']['Width'] + 20
+    height = window['kCGWindowBounds']['Height'] + 20
+
+    app_name = window['kCGWindowOwnerName']
+    window_name = window['kCGWindowName']
+
+    # make them integers
+    x, y, width, height = int(x), int(y), int(width), int(height)
+
+    # Capture the active window
+    screenshot = pyautogui.screenshot(region=(x, y, width, height))
+    
+    # return the screenshot, app name, and window name
+    return screenshot, app_name, window_name
+
+
+# Get the active window and take a screenshot
+def get_active_window_screenshot ():
+    # Get the active window
+    options = Quartz.kCGWindowListOptionOnScreenOnly | Quartz.kCGWindowListExcludeDesktopElements
+    active_window_list = Quartz.CGWindowListCopyWindowInfo(options, Quartz.kCGNullWindowID)
+
+    # Get the list of running applications
+    workspace = NSWorkspace.sharedWorkspace()
+    active_app_info = workspace.activeApplication()
+
+    # Get the active application name
+    active_app_name = active_app_info.get('NSApplicationName')
+
+    # Iterate through all windows to find the active window
+    for window in active_window_list:
+        if window['kCGWindowOwnerName'] == active_app_name and window['kCGWindowName'] != '':
+            # screenshot based on the active window
+            results  = screenshot(window)
+            # print (window['kCGWindowOwnerName'])
+            return results 
+            
