@@ -4,5 +4,8 @@ usage_data
 entire_screenshot/
 entire_screenshot_metadata/
 __pycache__
-active_window_screenshot/
-active_window_screenshot_metadata/
+active_screenshot/
+active_screenshot_metadata/
+output_videos/
+screenshot_data
+myenv
