@@ -24,6 +24,8 @@ Ensure you have Python installed on your system to use pip. It is also recommend
 
 ## Usage
 * Note: Please make sure your OpenAI Key is stored in your environment variables.
+
+  
 To start using UtopiaOS MemSearch, execute the included shell script:
 
 ```bash
