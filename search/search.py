@@ -96,7 +96,7 @@ def search_keyword(keyword, screenshot_directory="entire_screenshot", screenshot
     current_date = date.today()
     # current_date = "2024-04-13"
 
-    # current_date = current_date.strftime('%Y-%m-%d')
+    current_date = current_date.strftime('%Y-%m-%d')
 
     # Get the current working directory
     base_directory = os.getcwd()
