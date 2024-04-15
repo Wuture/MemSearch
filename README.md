@@ -23,6 +23,7 @@ pip install -r requirements.txt
 Ensure you have Python installed on your system to use pip. It is also recommended to use a virtual environment to manage the dependencies.
 
 ## Usage
+* Note: Please make sure your OpenAI Key is stored in your environment variables.
 To start using UtopiaOS MemSearch, execute the included shell script:
 
 ```bash
