@@ -54,10 +54,10 @@ To search, just type in any keyword:
 To do app search, please type in name of the app, follow by ": ", and then keyword. e.g. "Arc: No country for old man". 
 ![App Search](examples/app%20search.png)
 
-To get suggestions to list of action you could do, command+shift on any window
+To get suggestions to list of action you could do, command+shift on any window with "suggest.py" under the "recommend" folder. 
 ![Suggest](examples/suggest.png)
 
-To autocomplete any message window, command+shift on the input field.
+To autocomplete any message window, command+shift on the input field with "messaging_copilot" under the "recommend" folder
 ![Messaging Copilot](examples/messaging_copilot.png)
 
 
