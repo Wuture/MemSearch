@@ -1,6 +1,6 @@
 # UtopiaOS MemSearch
 
-UtopiaOS MemSearch enhances your MacOS experience by providing a powerful capability to search through your own interaction history. It uses screen tracking and OCR technologies to record and analyze your screen, allowing you to retrieve information seamlessly from past activities.
+UtopiaOS MemSearch enhances your MacOS experience by providing a powerful capability to search through your own interaction history. It uses multidimensional tracking methods to learn and analyze your screen, allowing you to retrieve information seamlessly from past activities. We also building an action recommendation engine on top of your MacOS to help you complete thing faster. 
 
 ## Installation
 To install the necessary dependencies for UtopiaOS MemSearch, run the following command:
