@@ -51,7 +51,7 @@ def extract_event_details(user_input):
             {"role": "system", "content": "You are a helpful assistant. Only return the event details into JSON format including meeting name, location, description, attendees which are separated by a comma, and time preferences. Sample JSON format: {'name': 'Meeting with John and Alice', 'location': 'Coffee Shop', 'description': 'Discuss project details', 'attendees': 'john@example.com,alice@example.com"},
             {"role": "user", "content": user_input}
         ],
-        temperature=0.5
+        temperature=0
     )
     details_json = response.choices[0].message.content
     return details_json
@@ -74,7 +74,7 @@ def suggest_optimal_time(credentials, user_constraints):
           {"role": "system", "content": "You are an AI event scheduler assistant. The user has provided you with a list of events and some constraints for the meeting time. Your goal is to suggest the best time for the meeting based on the user's time preferences and the existing events on their calendar. Avoid any time before 9am and after 9pm. Only return the best date and time in RFC3339 date format. For example, just return '2022-01-01T12:00:00Z' and nothing else in your response."},
           {"role": "user", "content": prompt}
       ],
-      temperature=0.5
+      temperature=0
     )
     
     suggested_time = response.choices[0].message.content
