@@ -12,11 +12,11 @@ from AppKit import NSWorkspace
 from tools import get_current_weather, paraphrase_text
 
 
-# Check if the key exists
-if "OPENAI_API_KEY" in os.environ:
-    print("OpenAI API key is set.")
-else:
-    print("OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
+# # Check if the key exists
+# if "OPENAI_API_KEY" in os.environ:
+#     print("OpenAI API key is set.")
+# else:
+#     print("OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
 
 # load tools from tools.json
 with open("recommend/tools.json", "r") as file:
