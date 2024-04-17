@@ -65,31 +65,20 @@ def encode_image(image):
 
 today_date = datetime.date.today()
 
+
 system_prompt = '''
 Today's date is {today_date}.
-You are an action recommendation system assistant on MacOS that recommends a set of actions user could take based on the screenshots and context user provides, be as detailed as possible.
-Let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
+You are an action recommendation system assistant on MacOS that recommends a set of actions, let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
+You only recommend actions that are available in the tools. 
+List all the options from 1~n, and let user choose the action they want to take.
 
-Return a list of actions available as json objects, with the following format:
+e.g. 
+1. Get weather
+2. Get calendar events
+3. Create a new event
+4. Delete an event
+5. Paraphrase a sentence
 
-{
-    "actions": [
-        {
-            "action": "Get weather",
-            "description": "Get the current weather based at San Francisco",
-            "confidence": 0.9
-            "function_name": get_current_weather,
-            "function_args": ["location": "San Francisco", "unit": "F"]
-        },
-        {
-            "action": "Get calendar events",
-            "description": "Get the calendar events for a specific date",
-            "confidence": 0.8
-            "function_name": get_events, 
-            "function_args": { "start_date": "2022-01-01", "end_date": "2022-01-31" }
-        }
-    ]
-}
 '''
 
 # Send context to GPT-4 and ask for a list of actions
@@ -127,6 +116,8 @@ def get_context (image):
 
     messages = [system, user_query]
 
+    print (messages)
+
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -137,8 +128,7 @@ def get_context (image):
         "messages": messages,
         "tools": available_tools,
         "tool_choice": "auto",
-        "response_format": { "type": "json_object" },
-        "max_tokens": 300,
+        "max_tokens": 100,
         "temperature": 0
     }
 
@@ -146,53 +136,7 @@ def get_context (image):
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
     # message =  response.json()['choices'][0]['message']['content']
     response_json = response.json()
-
     print (response_json)
-
-    # print (message + "\n")
-
-    # choice = int(input("> Enter the number of the action you want to take: "))
-    
-        # Extract action choices from the response
-    actions = json.loads(response_json['choices'][0]['message']['content'])['actions']
-    
-    # Print each action with its details
-    for idx, action in enumerate(actions, start=1):
-        print(f"{idx}: {action['action']}")
-        print(f"Description: {action['description']}")
-        print(f"Confidence: {action['confidence']}\n")
-    
-    # Ask user to choose an action
-    try:
-        choice = int(input("Enter the number of the action you want to take: "))
-        selected_action = actions[choice - 1]  # Subtract 1 to match list index
-        print(f"You selected: {selected_action['action']}")
-
-        print (selected_action)
-        
-        # Check if the selected action has a function to call
-        if 'function_name' in selected_action and selected_action['function_name'] is not None:
-            # Get the function name and arguments
-            function_name = selected_action['function_name'].split(".")[1]
-            function_args = selected_action['function_args']
-
-            print (function_name)
-            print (function_args)
-
-            # Call the selected function with arguments
-            if function_name in available_functions:
-                print(f"Calling function: {function_name}")
-                function_to_call = available_functions[function_name]
-                function_response = function_to_call(**function_args)
-                print(f"Function response: {function_response}")
-            else:
-                print(f"Function '{function_name}' is not available.")
-        else:
-            print("No function call available for the selected action.")
-    
-    except (ValueError, IndexError):
-        print("Invalid choice. Please enter a valid number.")
-
 
 def prepare_imessage(message):
     # Type and send the message

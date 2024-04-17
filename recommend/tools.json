@@ -57,6 +57,93 @@
                     "required": ["text"]
                 }
             }
-        }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "get_events",
+                "description": "Fetches calendar events for the given date or date range.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "start_date": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "The start date in ISO format (YYYY-MM-DD). Defaults to today."
+                        },
+                        "end_date": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "The end date in ISO format (YYYY-MM-DD). If not provided, defaults to start_date."
+                        }
+                    }
+                }
+            }
+        }, 
+        {
+            "type": "function",
+            "function": {
+                "name": "create_event",
+                "description": "Creates a new calendar event with the given parameters using AppleScript.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "title": {
+                            "type": "string",
+                            "description": "The title of the event"
+                        },
+                        "start_date": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "The start date and time of the event in ISO format (YYYY-MM-DDTHH:MM:SS)."
+                        },
+                        "end_date": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "The end date and time of the event in ISO format (YYYY-MM-DDTHH:MM:SS)."
+                        },
+                        "location": {
+                            "type": "string",
+                            "description": "The location of the event"
+                        },
+                        "notes": {
+                            "type": "string",
+                            "description": "Additional notes for the event"
+                        },
+                        "calendar": {
+                            "type": "string",
+                            "description": "The name of the calendar to add the event to. If not provided, uses the default calendar."
+                        }
+                    },
+                    "required": ["title", "start_date", "end_date"]
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "delete_event",
+                "description": "Deletes a calendar event with the given parameters using AppleScript.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "event_title": {
+                            "type": "string",
+                            "description": "The title of the event to delete"
+                        },
+                        "start_date": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "The start date and time of the event to delete in ISO format (YYYY-MM-DDTHH:MM:SS)."
+                        },
+                        "calendar": {
+                            "type": "string",
+                            "description": "The name of the calendar from which to delete the event. If not provided, uses the default calendar."
+                        }
+                    },
+                    "required": ["event_title", "start_date"]
+                }
+            }
+        } 
     ]
 }
