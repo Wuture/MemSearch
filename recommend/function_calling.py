@@ -69,7 +69,8 @@ e.g.
 3. Get current location
 4. Get current time
 5. Get current date
-6. Get current weather
+
+After user finished the action, let user choose the next action they want to take based on previous actions and context.
 
 '''
 
@@ -113,10 +114,14 @@ def run_conversation(messages):
             function_name = tool_call.function.name
             function_to_call = available_functions[function_name]
             function_args = json.loads(tool_call.function.arguments)
-            print (function_name)
-            print (function_args)
+
+            print("Calling function: ", function_name)
 
             function_response = function_to_call(**function_args)
+
+            # If the response is a json, convert it to a string
+            if isinstance(function_response, dict):
+                function_response = json.dumps(function_response)
             messages.append(
                 {
                     "tool_call_id": tool_call.id,
@@ -137,9 +142,10 @@ def run_conversation(messages):
     return messages
         
 if __name__ == "__main__":
-    context = email_msg
-    messages = [system_message, {"role": "user", "content": context}]
-    messages = run_conversation( messages)
+    # context = email_msg
+    # messages = [system_message, {"role": "user", "content": context}]
+    messages = [system_message]
+    # messages = run_conversation( messages)
     # let user 
 
     # Let user enter the message, and run the conversation until the user wants to exit
