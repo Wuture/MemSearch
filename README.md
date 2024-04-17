@@ -1,6 +1,6 @@
 # UtopiaOS MemSearch
 
-UtopiaOS MemSearch enhances your MacOS experience by providing a powerful capability to search through your own interaction history. It uses screen tracking and OCR technologies to record and analyze your screen, allowing you to retrieve information seamlessly from past activities.
+UtopiaOS MemSearch enhances your MacOS experience by providing a powerful capability to search through your own interaction history. It uses multidimensional tracking methods to learn and analyze your screen, allowing you to retrieve information seamlessly from past activities. We also building an action recommendation engine on top of your MacOS to help you complete thing faster. 
 
 ## Installation
 To install the necessary dependencies for UtopiaOS MemSearch, run the following command:
@@ -24,7 +24,6 @@ Ensure you have Python installed on your system to use pip. It is also recommend
 
 ## Usage
 * Note: Please make sure your OpenAI Key is stored in your environment variables.
-
 To start using UtopiaOS MemSearch, execute the included shell script:
 
 ```bash
@@ -33,7 +32,7 @@ chmod +x track.sh
 ```
 This script initializes the system and starts all necessary services for tracking and searching your OS interaction history.
 
-By default, we will search through the entire screen. If you want to search through active windows, provide argument for the search_app.py, by typing "active" in prompt. To start the MemSearch Python app, simply type:
+By default, we will search through the entire screen. If you want to search through active windows. To start the MemSearch Python app, simply type:
 
 ```bash
 chmod +x search.sh
@@ -53,10 +52,10 @@ To search, just type in any keyword:
 To do app search, please type in name of the app, follow by ": ", and then keyword. e.g. "Arc: No country for old man". 
 ![App Search](examples/app%20search.png)
 
-To get suggestions to list of action you could do, command+shift on any window
+To get suggestions to list of action you could do, command+shift on any window with "suggest.py" under the "recommend" folder. 
 ![Suggest](examples/suggest.png)
 
-To autocomplete any message window, command+shift on the input field.
+To autocomplete any message window, command+shift on the input field with "messaging_copilot" under the "recommend" folder
 ![Messaging Copilot](examples/messaging_copilot.png)
 
 
