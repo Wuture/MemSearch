@@ -9,3 +9,4 @@ active_screenshot_metadata/
 output_videos/
 screenshot_data
 myenv
+.gitignore

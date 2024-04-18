@@ -1,10 +1,7 @@
 from pynput import keyboard
 import os
-import base64
-from io import BytesIO
-import pyautogui
 import json
-import tools
+import tools.functions as functions
 import inspect
 from openai import OpenAI
 import requests
@@ -37,11 +34,11 @@ def load_tools():
     available_functions = {}
     available_tools = {}
     # load tools from tools.json
-    with open("tools.json", "r") as file:
+    with open("tools/tools.json", "r") as file:
         available_tools = json.load(file)['tools']
-    # Get all members of the tools module
-    members = inspect.getmembers(tools)
 
+    # Get all members of the tools module
+    members = inspect.getmembers(functions)
     # load all functions from tools module
     for name, member in members:
         # Check if the member is a function
@@ -52,6 +49,9 @@ def load_tools():
     return available_tools, available_functions
 
 available_tools, available_functions = load_tools()
+
+# print (available_tools)
+# print (available_functions)
 
 
 # Write an intro to this script and print to terminal

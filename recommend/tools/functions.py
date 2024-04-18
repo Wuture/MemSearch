@@ -1,6 +1,13 @@
 import requests
 import json
 import os
+# import contacts
+# import inspect
+
+# contacts = contacts.Contacts()
+
+# Get functions from contacts module
+# members = inspect.getmembers(contacts)
 
 # Get ACCESS_TOKEN from environment variable
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
@@ -30,8 +37,6 @@ calendar_app = "Calendar"
 #         "required": ["language", "code"],
 #     },
 # }
-
-# print (ACCESS_TOKEN)
 
 # Example dummy function hard coded to return the same weather
 # In production, this could be your backend API or an external API

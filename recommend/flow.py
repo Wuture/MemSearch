@@ -1,7 +1,7 @@
 from openai import OpenAI
 import json
 import inspect
-import tools
+import tools.functions as functions
 import datetime
 
 client = OpenAI()
@@ -13,7 +13,7 @@ def load_tools():
     with open("tools.json", "r") as file:
         available_tools = json.load(file)['tools']
     # Get all members of the tools module
-    members = inspect.getmembers(tools)
+    members = inspect.getmembers(functions)
 
     # load all functions from tools module
     for name, member in members:

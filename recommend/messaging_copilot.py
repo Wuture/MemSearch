@@ -9,7 +9,7 @@ import json
 from openai import OpenAI
 import Quartz
 from AppKit import NSWorkspace
-from tools import get_current_weather, paraphrase_text
+from recommend.tools.functions import get_current_weather, paraphrase_text
 
 
 # # Check if the key exists
