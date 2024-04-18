@@ -75,7 +75,7 @@ def get_events(start_date=None, end_date=None):
     if platform.system() != "Darwin":
         return "This method is only supported on MacOS"
     
-    print (start_date)
+    # print (start_date)
 
     # Convert start_date and end_date strings to datetime.date objects if provided
     if start_date is not None:

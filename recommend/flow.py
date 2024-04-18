@@ -26,51 +26,15 @@ def load_tools():
 
 available_tools, available_functions = load_tools()
 
-# print (available_functions)
-# print (available_tools)
-
 today_date = datetime.datetime.now().strftime("%Y-%m-%d")
 
-# system_prompt = '''
-# Today's date is {today_date}.
-# You are an action recommendation system assistant on MacOS that recommends a set of actions user could take based on the screenshots and context user provides, be as detailed as possible.
-# Let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
-
-# Return a list of actions available as json objects, with the following format:
-
-# {
-#     "actions": [
-#         {
-#             "action": "Get weather",
-#             "description": "Get the current weather based at San Francisco",
-#             "confidence": 0.9
-#             "function_name": get_current_weather,
-#             "function_args": ["location": "San Francisco", "unit": "F"]
-#         },
-#         {
-#             "action": "Get calendar events",
-#             "description": "Get the calendar events for a specific date",
-#             "confidence": 0.8
-#             "function_name": get_events, 
-#             "function_args": { "start_date": "2022-01-01", "end_date": "2022-01-31" }
-#         }
-#     ]
-# }
-# '''
-
-system_prompt = '''
+system_prompt = f'''
+Today's date is {today_date}.
 You are an action recommendation system assistant on MacOS that recommends a set of actions, let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
 You only recommend actions that are available in the tools. 
 List all the options from 1~n, and let user choose the action they want to take.
-
-e.g. 
-1. Get weather
-2. Get calendar events
-3. Get current location
-4. Get current time
-5. Get current date
-
-After user finished the action, let user choose the next action they want to take based on previous actions and context.
+After user finished the action, proactively suggest more actions for user to take based on current context.
+If you don't know what time and date it is, call the function get_current_time_and_date() to get the current time and date.
 
 '''
 
@@ -84,28 +48,24 @@ system_message = {
         ]
 }
 
-email_msg = '''
-Marisa Lu
-Title: Coffee?
-
-Hey Jason,
-Was wondering if you'd be interested in meeting my team at Philz Coffee at 11 AM today. No pressure if you can't make it, although I think you guys would really get along!
-'''
-
 def run_conversation(messages):
+    print (messages)
     # Step 1: send the conversation and available functions to the model
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=messages,
         tools=available_tools,
         tool_choice="auto",  # auto is default, but we'll be explicit
+        temperature=0,
     )
     response_message = response.choices[0].message
-    print(response_message)
     tool_calls = response_message.tool_calls
+
+    
     # Step 2: check if the model wanted to call a function
-    messages.append(response_message)  # extend conversation with assistant's reply
+    # messages.append(response_message)  # extsend conversation with assistant's reply
     if tool_calls:
+        messages.append(response_message)
         # Step 3: call the function
         # Note: the JSON response may not always be valid; be sure to handle errors
         # Step 4: send the info for each function call and function response to the model
@@ -115,7 +75,7 @@ def run_conversation(messages):
             function_to_call = available_functions[function_name]
             function_args = json.loads(tool_call.function.arguments)
 
-            print("Calling function: ", function_name)
+            # print("Calling function: ", function_name)
 
             function_response = function_to_call(**function_args)
 
@@ -134,10 +94,30 @@ def run_conversation(messages):
             model="gpt-3.5-turbo",
             messages=messages,
         )  # get a new response from the model where it can see the function response
-        second_message = second_response.choices[0].message
-        print(second_message)
+        second_message = second_response.choices[0]
+        if second_message.message.content:
+            print("Response from the model after function call:")
+            print(second_message.message.content)
+        # print(second_message)
         # append the new message to the conversation
-        messages.append(second_message)
+            # Prepare assistant message to append to the conversation
+            assistant_message = {
+                "role": "assistant",
+                "content": second_message.message.content,
+            }
+            messages.append(assistant_message)
+    else:
+        if response_message.content is not None:
+            print("Response from the model: \n") 
+            print(response_message.content)
+            
+            # Add assistant's response to the conversation
+            assistant_message = {
+                "role": "assistant",
+                "content": response_message.content,
+            }
+            messages.append(assistant_message)
+
     
     return messages
         
@@ -147,9 +127,9 @@ if __name__ == "__main__":
     messages = [system_message]
     # messages = run_conversation( messages)
     # let user 
-
+    print ("\n\nPlease tell us what you need, we will recommend the best tools to help you accomplish your task.")
     # Let user enter the message, and run the conversation until the user wants to exit
     while True:
-        user_input = input("Enter your message: ")
+        user_input = input("> ")
         messages.append({"role": "user", "content": user_input})
         messages = run_conversation(messages)
