@@ -6,6 +6,8 @@ import datetime
 from dateutil.parser import parse
 from openai import OpenAI
 import json
+import pytesseract
+from PIL import Image
 
 client = OpenAI()
 
@@ -40,9 +42,19 @@ def create_calendar_event(credentials, summary, location, description, start_tim
         },
         'attendees': [{'email': email} for email in attendees]
     }
+
+    print(event)
     
     event = service.events().insert(calendarId='primary', body=event).execute()
     print('Event created: %s' % (event.get('htmlLink')))
+
+def extract_text_from_image(image_path):
+    try:
+        return pytesseract.image_to_string(Image.open(image_path))
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
 
 def extract_event_details(user_input):
     response = client.chat.completions.create(
@@ -104,8 +116,21 @@ def parse_and_schedule_event(credentials, suggested_time, summary, location, des
 
     create_calendar_event(credentials, summary, location, description, start_time, end_time, attendees)
 
-if __name__ == '__main__':
+def schedule_event_from_description():
     credentials = authenticate_google_calendar()
     user_input = input("Please describe the event you want to schedule, including the name, location, description, attendees, and any time preferences: ")
-    event_details_json = extract_event_details(user_input)
-    suggest_and_schedule_event(credentials, event_details_json)
+    event_details = extract_event_details(user_input)
+    suggest_and_schedule_event(credentials, event_details)
+
+def extract_details_from_image_and_schedule(image_path):
+    text = extract_text_from_image(image_path)
+    if text:
+        event_details_json = extract_event_details(text)
+        credentials = authenticate_google_calendar()
+        suggest_and_schedule_event(credentials, event_details_json)
+    else:
+        print("No text could be extracted from the image.")
+
+if __name__ == '__main__':
+    #schedule_event_from_description()
+    extract_details_from_image_and_schedule('sample_email.png')
