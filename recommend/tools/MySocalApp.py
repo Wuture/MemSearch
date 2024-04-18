@@ -46,7 +46,9 @@ def create_calendar_event(credentials, summary, location, description, start_tim
     print(event)
     
     event = service.events().insert(calendarId='primary', body=event).execute()
-    print('Event created: %s' % (event.get('htmlLink')))
+    message = 'Event created: %s' % (event.get('htmlLink'))
+
+    return message
 
 def extract_text_from_image(image_path):
     try:
@@ -114,7 +116,7 @@ def parse_and_schedule_event(credentials, suggested_time, summary, location, des
     start_time = start_time.isoformat()
     end_time = end_time.isoformat()
 
-    create_calendar_event(credentials, summary, location, description, start_time, end_time, attendees)
+    return create_calendar_event(credentials, summary, location, description, start_time, end_time, attendees)
 
 def schedule_event_from_description():
     credentials = authenticate_google_calendar()
@@ -131,6 +133,13 @@ def extract_details_from_image_and_schedule(image_path):
     else:
         print("No text could be extracted from the image.")
 
-if __name__ == '__main__':
-    #schedule_event_from_description()
-    extract_details_from_image_and_schedule('sample_email.png')
+# if __name__ == '__main__':
+#     #schedule_event_from_description()
+#     extract_details_from_image_and_schedule('sample_email.png')
+
+
+def auto_event_scheduler ():
+    credentials = authenticate_google_calendar()
+    user_input = input("Please describe the event you want to schedule, including the name, location, description, attendees, and any time preferences: ")
+    event_details = extract_event_details(user_input)
+    suggest_and_schedule_event(credentials, event_details)

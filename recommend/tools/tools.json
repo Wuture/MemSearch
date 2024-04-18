@@ -161,6 +161,18 @@
                     "required": ["message"]
                 }
             }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "auto_event_scheduler",
+                "description": "Recommends this AI Agent whenever user wants to schedule an event",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                    }
+                }
+            }
         }
     ]
 }

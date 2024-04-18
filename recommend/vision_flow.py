@@ -7,6 +7,7 @@ from openai import OpenAI
 import requests
 from app_utils import *
 import datetime
+from tools.MySocalApp import auto_event_scheduler
 
 
 # Check if the key exists
@@ -46,12 +47,14 @@ def load_tools():
             # Add the function to the available_functions dictionary
             available_functions[name] = member
 
+    # add au
+    available_functions['auto_event_scheduler'] = auto_event_scheduler
     return available_tools, available_functions
 
 available_tools, available_functions = load_tools()
 
-# print (available_tools)
-# print (available_functions)
+print (available_tools)
+print (available_functions)
 
 
 # Write an intro to this script and print to terminal
