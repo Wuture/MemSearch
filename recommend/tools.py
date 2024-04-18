@@ -8,6 +8,7 @@ import datetime
 import platform
 import subprocess
 from app_utils import run_applescript, run_applescript_capture
+import pyautogui
 
 calendar_app = "Calendar"
 
@@ -367,3 +368,8 @@ def get_first_calendar() -> str:
         return stdout[0].strip()
     else:
         return None
+
+def reply_message(message):
+    print ("Writing message to the chat window now:")
+    pyautogui.write(message)
+    return "Message written to chat window: " + message

@@ -2,6 +2,8 @@ import Quartz
 from AppKit import NSWorkspace
 import pyautogui
 import subprocess
+from io import BytesIO
+import base64
 
 
 # screenshot based on the active window
@@ -71,3 +73,9 @@ def run_applescript_capture(script):
     stdout, stderr = result.stdout, result.stderr
     return stdout, stderr
 
+
+# Function to encode the image
+def encode_image(image):
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode('utf-8')

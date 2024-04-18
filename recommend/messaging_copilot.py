@@ -105,7 +105,7 @@ def send_to_gpt4v (image):
         "content": [
             {
             "type": "text",
-            "text": "Give me a response, use function calling if necessary."
+            "text": "Give me only the response and nothing else."
             },
             {
             "type": "image_url",

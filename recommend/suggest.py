@@ -42,55 +42,48 @@ def load_tools():
     return available_tools, available_functions
 
 available_tools, available_functions = load_tools()
-# load_tools()
-
-# print (available_functions)
 
 # Write an intro to this script and print to terminal
-print ("Press 'command + shift + space' on your current message window, and see AI do its magic!  \n")
-
-# Function to encode the image
-def encode_image(image):
-    buffered = BytesIO()
-    image.save(buffered, format="PNG")
-    return base64.b64encode(buffered.getvalue()).decode('utf-8')
-
-
-# system_prompt = '''
-# "You are an action recommendation system assistant on MacOS that recommends a set of actions user could take based on the screenshots and context user provides, be as detailed as possible. 
-# The actions shxould be relevant to the user's current context and should help the user achieve their current task. 
-# Rank you actions in order of relevancy. Then let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
-# Only recommend actions that are available in the tools.json files, return a list of functions for users to choose.
-# '''
+print ("Press 'command + shift' on your current message window, and see AI do its magic!  \n")
 
 today_date = datetime.date.today()
 
-system_prompt = '''
+system_prompt = f'''
 Today's date is {today_date}.
-You are an action recommendation system assistant on MacOS that recommends a set of actions user could take based on the screenshots and context user provides, be as detailed as possible.
-Let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
+You are an action recommendation system assistant on MacOS that recommends a set of actions, let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
+You only recommend actions that are available in the tools. 
+List all the options from 1~n, and let user choose the action they want to take.
+After user finished the action, proactively suggest more actions for user to take based on current context.
+If you don't know what time and date it is, call the function get_current_time_and_date() to get the current time and date.
 
-Return a list of actions available as json objects, with the following format:
-
-{
-    "actions": [
-        {
-            "action": "Get weather",
-            "description": "Get the current weather based at San Francisco",
-            "confidence": 0.9
-            "function_name": get_current_weather,
-            "function_args": ["location": "San Francisco", "unit": "F"]
-        },
-        {
-            "action": "Get calendar events",
-            "description": "Get the calendar events for a specific date",
-            "confidence": 0.8
-            "function_name": get_events, 
-            "function_args": { "start_date": "2022-01-01", "end_date": "2022-01-31" }
-        }
-    ]
-}
 '''
+
+# system_prompt = '''
+# Today's date is {today_date}.
+# You are an action recommendation system assistant on MacOS that recommends a set of actions user could take based on the screenshots and context user provides, be as detailed as possible.
+# Let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
+
+# Return a list of actions available as json objects, with the following format:
+
+# {
+#     "actions": [
+#         {
+#             "action": "Get weather",
+#             "description": "Get the current weather based at San Francisco",
+#             "confidence": 0.9
+#             "function_name": get_current_weather,
+#             "function_args": ["location": "San Francisco", "unit": "F"]
+#         },
+#         {
+#             "action": "Get calendar events",
+#             "description": "Get the calendar events for a specific date",
+#             "confidence": 0.8
+#             "function_name": get_events, 
+#             "function_args": { "start_date": "2022-01-01", "end_date": "2022-01-31" }
+#         }
+#     ]
+# }
+# '''
 
 # Send context to GPT-4 and ask for a list of actions
 def get_context (image):
@@ -137,7 +130,7 @@ def get_context (image):
         "messages": messages,
         "tools": available_tools,
         "tool_choice": "auto",
-        "response_format": { "type": "json_object" },
+        # "response_format": { "type": "json_object" },
         "max_tokens": 300,
         "temperature": 0
     }

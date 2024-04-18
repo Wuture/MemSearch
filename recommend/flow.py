@@ -10,7 +10,7 @@ def load_tools():
     available_functions = {}
     available_tools = {}
     # load tools from tools.json
-    with open("recommend/tools.json", "r") as file:
+    with open("tools.json", "r") as file:
         available_tools = json.load(file)['tools']
     # Get all members of the tools module
     members = inspect.getmembers(tools)
