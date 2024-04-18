@@ -52,11 +52,8 @@ To search, just type in any keyword:
 To do app search, please type in name of the app, follow by ": ", and then keyword. e.g. "Arc: No country for old man". 
 ![App Search](examples/app%20search.png)
 
-To get suggestions to list of action you could do, command+shift on any window with "suggest.py" under the "recommend" folder. 
+To get suggestions to list of action you could do, command+shift on any window with "flow.py" or "vision_flow.py" under the "recommend" folder. The former has a simple chat interface, the latter 
 ![Suggest](examples/suggest.png)
-
-To autocomplete any message window, command+shift on the input field with "messaging_copilot" under the "recommend" folder
-![Messaging Copilot](examples/messaging_copilot.png)
 
 
 ## Components
@@ -70,6 +67,4 @@ UtopiaOS MemSearch consists of several Python scripts, each serving a unique rol
 
 4. daily_summary.py: generate an AI report of user's usage today. User could proceed to ask questions about his daily routines. 
 
-5. messaging_copilot.py: press command+shift on any chatting window (Gmail, iMessage, Telegram etc.), and watch AI auto generate response for you. 
-
-6. suggest.py: suggest a list of actions user could do based on the current context. 
+5. vision_flow.py and flow.py: understands your intent and recommend actions for you to take!
