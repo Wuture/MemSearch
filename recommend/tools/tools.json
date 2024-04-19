@@ -93,20 +93,6 @@
         {
             "type": "function",
             "function": {
-                "name": "auto_event_scheduler",
-                "description": "Recommends this AI Agent whenever user wants to schedule an event",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "snapshot_details": "string",
-                        "description": "The snapshot that contains the event details such as meeting name, location, description, attendees and time preference."
-                    }
-                }
-            }
-        },
-        {
-            "type": "function",
-            "function": {
                 "name": "send_sms",
                 "description": "Sends an SMS message to the specified recipient using the Messages app.",
                 "parameters": {
@@ -403,6 +389,20 @@
                     "type": "object",
                     "properties": {},
                     "required": []
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "auto_event_scheduler",
+                "description": "Recommends this AI Agent whenever user wants to schedule an event",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "snapshot_details": "string",
+                        "description": "The snapshot that contains the event details such as meeting name, location, description, attendees and time preference."
+                    }
                 }
             }
         }
