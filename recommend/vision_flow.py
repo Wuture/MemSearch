@@ -11,7 +11,8 @@ from tools.MySocalApp import auto_event_scheduler
 from tools.contacts import Contacts
 from tools.mail import Mail
 from tools.sms import SMS
-from tools.calendar import Calendar
+from tools.Calendar import Calendar
+import pytesseract
 
 
 # Check if the key exists
@@ -94,11 +95,19 @@ available_tools, available_functions = load_tools()
 # Write an intro to this script and print to terminal
 print ("Press 'command + shift' on your current window, see AI recommend a list of things that you could do!  \n")
 
+def extract_text_from_image(image):
+    try:
+        return pytesseract.image_to_string(image)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
 
 # Send context to GPT-4 and ask for a list of actions
 def get_context (image, app_name, window_name):
     print ("Preparing an response!\n")
     base64_image = encode_image(image)
+    text_from_image = extract_text_from_image(image)
 
     # Prepare system message for gpt4v
     system = {
@@ -117,7 +126,7 @@ def get_context (image, app_name, window_name):
         "content": [
             {
             "type": "text",
-            "text": f"First give me a description of the screenshot, I am current using {app_name} and on its {window_name}. Give me a list of actions i could do based on the screenshot and context that i provided, and number them. Allow me to choose 1 of the actions to execute."
+            "text": f"First take the OCR details: '{text_from_image}' and also give me a description of the screenshot, I am current using {app_name} and on its {window_name}. Give me a list of actions i could do based on the screenshot and context that i provided, and number them. Allow me to choose 1 of the actions to execute."
             },
             {
             "type": "image_url",
