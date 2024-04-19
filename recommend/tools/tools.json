@@ -396,12 +396,14 @@
             "type": "function",
             "function": {
                 "name": "auto_event_scheduler",
-                "description": "Recommends this AI Agent whenever user wants to schedule an event",
+                "description": "Recommends this AI Agent whenever user wants to schedule an event based on the snapshot details such as meeting name, location, description, attendee emails and time preference.",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "snapshot_details": "string",
-                        "description": "The snapshot that contains the event details such as meeting name, location, description, attendees and time preference."
+                        "snapshot_details": {
+                            "type": "string",
+                            "description": "The snapshot that contains the event details such as meeting name, location, description, attendee emails and time preference."
+                        }
                     }
                 }
             }
