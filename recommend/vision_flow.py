@@ -53,7 +53,7 @@ def add_functions_to_available_functions(Class):
 
 def load_tools():
     # load tools from tools.json
-    with open("recommend/tools/tools_backup.json", "r") as file:
+    with open("recommend/tools/tools.json", "r") as file:
         available_tools = json.load(file)['tools']
 
     # Get all members of the tools module

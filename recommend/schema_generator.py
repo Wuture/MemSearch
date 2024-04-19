@@ -13,7 +13,7 @@ def generate_json_schema(code, class_name=None):
     {
         "type": "function",
         "function": {
-            "name": class_name.function_name_1
+            "name": function_name_1
             "description": this is a function "",
             "parameters": {
                 "type": "object",
@@ -42,7 +42,7 @@ def generate_json_schema(code, class_name=None):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": prompt},
-            {"role": "user", "content": f"give me a JSON. The class name that the function belongs to is {class_name}. Make sure the required field in the json is correct!"}
+            {"role": "user", "content": f"give me a JSON. Make sure the required field in the json is correct!"}
         ],
         response_format = { "type": "json_object" }
     )

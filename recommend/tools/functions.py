@@ -74,7 +74,7 @@ def paraphrase_text(text, plan="paid", prefer_gpt="gpt3", custom_style="", langu
     else:
         return {"error": "Failed to fetch data", "status_code": response.status_code}
 
-def reply_message(message):
+def write_message_with_keyboard(message):
     # Type and send the message
     pyautogui.write(message)
     # pyautogui.press('return')
