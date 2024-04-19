@@ -1,16 +1,10 @@
 import subprocess
 import platform
-from ..utils.run_applescript import run_applescript
-
+from app_utils import run_applescript
 
 class SMS:
-    def __init__(self, computer):
-        self.computer = computer
-        self.messages_app = "Messages"
-
-
-
-    def send(self, to, message):
+    @staticmethod
+    def send_sms(to: str, message: str) -> str:
         """
         Sends an SMS message to the specified recipient using the Messages app.
         """

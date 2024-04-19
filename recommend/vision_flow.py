@@ -8,6 +8,10 @@ import requests
 from app_utils import *
 import datetime
 from tools.MySocalApp import auto_event_scheduler
+from tools.contacts import Contacts
+from tools.mail import Mail
+from tools.sms import SMS
+from tools.calendar import Calendar
 
 
 # Check if the key exists
@@ -25,17 +29,30 @@ today_date = datetime.date.today()
 system_prompt = f'''
 Today's date is {today_date}.
 You are an action recommendation system assistant on MacOS that recommends a set of actions based on current context and screenshots that the user provides, let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
-You only recommend actions that are available in the tools. 
+You only recommend actions that are available in the tools provided. 
 List all the options from 1~n, and let user choose the action they want to take.
 After user finished the action, proactively suggest more actions for user to take based on current context.
-If you need more parameters for function calling, you can ask the user for more information.
+If you need more parameters to complete function calling, you can ask the user for more information.
 '''
 
+available_functions = {}
+available_tools = {}
+
+def add_functions_to_available_functions(Class):
+    class_name = Class.__name__
+    # Get all members of the functions module
+    members = inspect.getmembers(Class)
+    # load all functions from the Contacts class
+    for name, member in members:
+        # print (name)
+        # Check if the member is a method
+        if inspect.isfunction(member):
+            # Add the method to the available_functions dictionary
+            available_functions[name] = member
+
 def load_tools():
-    available_functions = {}
-    available_tools = {}
     # load tools from tools.json
-    with open("tools/tools.json", "r") as file:
+    with open("recommend/tools/tools_backup.json", "r") as file:
         available_tools = json.load(file)['tools']
 
     # Get all members of the tools module
@@ -47,22 +64,39 @@ def load_tools():
             # Add the function to the available_functions dictionary
             available_functions[name] = member
 
-    # add au
+    # add auto_event_scheduler from MySocalApp to available functions
     available_functions['auto_event_scheduler'] = auto_event_scheduler
+
+    # Add Contacts to available functions
+    add_functions_to_available_functions (Contacts)
+    add_functions_to_available_functions (Mail)
+    add_functions_to_available_functions (SMS)
+    add_functions_to_available_functions (Calendar)
+
     return available_tools, available_functions
 
 available_tools, available_functions = load_tools()
 
-print (available_tools)
-print (available_functions)
+# for tool in available_tools:
+    # function_name  = tool['function']['name']
+#     # print (function_name)
+#     function = available_functions[function_name]
+    # print (function)
+# print (available_functions)
+
+# for function in available_functions:
+    # print (function)
+
+# for tool in available_tools:
+#     print (tool)
 
 
 # Write an intro to this script and print to terminal
-print ("Press 'command + shift' on your current message window, and see AI do its magic!  \n")
+print ("Press 'command + shift' on your current window, see AI recommend a list of things that you could do!  \n")
 
 
 # Send context to GPT-4 and ask for a list of actions
-def get_context (image):
+def get_context (image, app_name, window_name):
     print ("Preparing an response!\n")
     base64_image = encode_image(image)
 
@@ -83,7 +117,7 @@ def get_context (image):
         "content": [
             {
             "type": "text",
-            "text": "Give me a list of actions i could do based on the screenshot and context that i provided, and number them. Allow me to choose 1 of the actions to execute."
+            "text": f"First give me a description of the screenshot, I am current using {app_name} and on its {window_name}. Give me a list of actions i could do based on the screenshot and context that i provided, and number them. Allow me to choose 1 of the actions to execute."
             },
             {
             "type": "image_url",
@@ -114,6 +148,7 @@ def get_context (image):
 
     print ("Pulling a list of actions...\n")
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    # print (response.json())
     # message =  response.json()['choices'][0]['message']['content']
     response_json = response.json()
     message = response_json['choices'][0]['message']['content']
@@ -210,10 +245,13 @@ def on_activate():
     if not loop_active:
         screenshot, app_name, window_name = get_active_window_screenshot()
         screenshot = screenshot.resize((screenshot.width, screenshot.height))
-        messages = get_context(screenshot)
+        messages = get_context(screenshot, app_name, window_name)
         loop_active = True
         while loop_active:
             user_input = input("> ")
+            # Listener for keyboard events
+            # with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+            #     listener.join()
             messages.append({"role": "user", "content": user_input})
             messages = run_conversation(messages)
     else:

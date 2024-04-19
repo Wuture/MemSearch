@@ -1,11 +1,9 @@
 import platform
-from recommend.app_utils import run_applescript_capture
+from app_utils import run_applescript_capture
 
 class Contacts:
-    def __init__(self):
-        pass
-
-    def get_phone_number(self, contact_name):
+    @staticmethod
+    def get_phone_number(contact_name):
         """
         Returns the phone number of a contact by name.
         """
@@ -22,7 +20,7 @@ class Contacts:
         stout, stderr = run_applescript_capture(script)
         # If the person is not found, we will try to find similar contacts
         if "Can’t get person" in stderr:
-            names= self.get_full_names_from_first_name(contact_name)
+            names= Contacts.get_full_names_from_first_name(contact_name)
             if names == "No contacts found":
                 return "No contacts found"
             else:
@@ -31,8 +29,8 @@ class Contacts:
         else:
             return stout.replace('\n', '')
 
-
-    def get_email_address(self, contact_name):
+    @staticmethod
+    def get_email_address(contact_name):
         """
         Returns the email address of a contact by name.
         """
@@ -49,7 +47,7 @@ class Contacts:
         stout, stderr = run_applescript_capture(script)
         # If the person is not found, we will try to find similar contacts
         if "Can’t get person" in stderr:
-            names= self.get_full_names_from_first_name(contact_name)
+            names= Contacts.get_full_names_from_first_name(contact_name)
             if names == "No contacts found":
                 return "No contacts found"
             else:
@@ -58,8 +56,8 @@ class Contacts:
         else:
             return stout.replace('\n', '')
 
-
-    def get_full_names_from_first_name(self, first_name):
+    @staticmethod
+    def get_full_names_from_first_name(contact, first_name):
         """
         Returns a list of full names of contacts that contain the first name provided.
         """

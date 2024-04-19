@@ -138,7 +138,7 @@ def extract_details_from_image_and_schedule(image_path):
 #     extract_details_from_image_and_schedule('sample_email.png')
 
 
-def auto_event_scheduler ():
+def auto_event_scheduler (screenshot_detail):
     credentials = authenticate_google_calendar()
     user_input = input("Please describe the event you want to schedule, including the name, location, description, attendees, and any time preferences: ")
     event_details = extract_event_details(user_input)

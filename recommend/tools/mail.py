@@ -3,16 +3,13 @@ import platform
 import re
 import subprocess
 
-from ..utils.run_applescript import run_applescript, run_applescript_capture
+from app_utils import *
 
+app_name = "Mail"
 
 class Mail:
-    def __init__(self, computer):
-        self.computer = computer
-        # In the future, we should allow someone to specify their own mail app
-        self.mail_app = "Mail"
-
-    def get(self, number=5, unread: bool = False):
+    @staticmethod
+    def get_email(number=5, unread: bool = False):
         """
         Retrieves the last {number} emails from the inbox, optionally filtering for only unread emails.
         """
@@ -30,7 +27,7 @@ class Mail:
         while retries < 3:
             read_status_filter = "whose read status is false" if unread else ""
             script = f"""
-            tell application "{self.mail_app}"
+            tell application "{app_name}"
                 set latest_messages to messages of inbox {read_status_filter}
                 set email_data to {{}}
                 repeat with i from 1 to {number}
@@ -58,7 +55,8 @@ class Mail:
                 else:
                     return stdout
 
-    def send(self, to, subject, body, attachments=None):
+    @staticmethod
+    def send_email(to, subject, body, attachments=None):
         """
         Sends an email with the given parameters using the default mail app.
         """
@@ -73,7 +71,7 @@ class Mail:
 
         if attachments:
             formatted_attachments = [
-                self.format_path_for_applescript(path) for path in attachments
+                Mail.format_path_for_applescript(path) for path in attachments
             ]
 
             # Generate AppleScript to attach each file
@@ -83,13 +81,13 @@ class Mail:
             )
 
             # Calculate the delay based on the size of the attachments
-            delay_seconds = self.calculate_upload_delay(attachments)
+            delay_seconds = Mail.calculate_upload_delay(attachments)
 
             print(f"Uploading attachments. This should take ~{delay_seconds} seconds.")
 
         # In the future, we might consider allowing the llm to specify an email to send from
         script = f"""
-        tell application "{self.mail_app}"
+        tell application "{app_name}"
             set new_message to make new outgoing message with properties {{subject:"{subject}", content:"{body}"}} at end of outgoing messages
             tell new_message
                 set visible to true
@@ -105,8 +103,9 @@ class Mail:
             return f"""Email sent to {to}"""
         except subprocess.CalledProcessError:
             return "Failed to send email"
-
-    def unread_count(self):
+   
+    @staticmethod
+    def unread_count():
         """
         Retrieves the count of unread emails in the inbox, limited to 50.
         """
@@ -114,7 +113,7 @@ class Mail:
             return "This method is only supported on MacOS"
 
         script = f"""
-            tell application "{self.mail_app}"
+            tell application "{app_name}"
                 set unreadMessages to (messages of inbox whose read status is false)
                 if (count of unreadMessages) > 50 then
                     return 50
@@ -132,8 +131,9 @@ class Mail:
             print(e)
             return 0
 
+    @staticmethod
     # Estimate how long something will take to upload
-    def calculate_upload_delay(self, attachments):
+    def calculate_upload_delay(attachments):
         try:
             total_size_mb = sum(
                 os.path.getsize(os.path.expanduser(att)) for att in attachments
@@ -147,8 +147,9 @@ class Mail:
         except:
             # Return a default delay of 5 seconds if an error occurs
             return 5
-
-    def format_path_for_applescript(self, file_path):
+        
+    @staticmethod
+    def format_path_for_applescript(file_path):
         # Escape backslashes, quotes, and curly braces for AppleScript
         file_path = (
             file_path.replace("\\", "\\\\")

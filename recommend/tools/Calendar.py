@@ -4,18 +4,29 @@ import subprocess
 
 from app_utils import run_applescript, run_applescript_capture
 
+app_name = "Calendar"
 
 class Calendar:
-    def __init__(self):
-        # In the future, we might consider a way to use a different calender app. For now its Calendar
-        self.calendar_app = "Calendar"
-
-    def get_events(self, start_date=datetime.date.today(), end_date=None):
+    @staticmethod
+    def get_events(start_date=None, end_date=None):
         """
         Fetches calendar events for the given date or date range.
         """
         if platform.system() != "Darwin":
             return "This method is only supported on MacOS"
+        
+        # print (start_date)
+
+        # Convert start_date and end_date strings to datetime.date objects if provided
+        if start_date is not None:
+            start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+        else:
+            start_date = datetime.date.today()
+
+        if end_date is not None:
+            end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+        else:
+            end_date = None
 
         # Format dates for AppleScript
         applescript_start_date = (
@@ -35,20 +46,20 @@ class Calendar:
         set theDate to date "{applescript_start_date}"
         set endDate to date "{applescript_end_date}"
         tell application "System Events"
-            set calendarIsRunning to (name of processes) contains "{self.calendar_app}"
+            set calendarIsRunning to (name of processes) contains "{app_name}"
             if calendarIsRunning then
-                tell application "{self.calendar_app}" to activate
+                tell application "{app_name}" to activate
             else
-                tell application "{self.calendar_app}" to launch
+                tell application "{app_name}" to launch
                 delay 1 -- Wait for the application to open
-                tell application "{self.calendar_app}" to activate
+                tell application "{app_name}" to activate
             end if
         end tell
 
         set outputText to ""
 
         -- Access the Calendar app
-        tell application "{self.calendar_app}"
+        tell application "{app_name}"
             
             -- Initialize a list to hold summaries and dates of all events from all calendars
             set allEventsInfo to {{}}
@@ -152,8 +163,8 @@ class Calendar:
 
         return stdout
 
+    @staticmethod
     def create_event(
-        self,
         title: str,
         start_date: datetime.datetime,
         end_date: datetime.datetime,
@@ -168,35 +179,37 @@ class Calendar:
             return "This method is only supported on MacOS"
 
         # Format datetime for AppleScript
-        applescript_start_date = start_date.strftime("%B %d, %Y %I:%M:%S %p")
-        applescript_end_date = end_date.strftime("%B %d, %Y %I:%M:%S %p")
+        start_date = datetime.datetime.strptime(start_date, '%Y-%m-%dT%H:%M:%S')
+        applescript_start_date = start_date.strftime("%B %d, %Y at %I:%M:%S %p")
+        end_date = datetime.datetime.strptime(end_date, '%Y-%m-%dT%H:%M:%S')
+        applescript_end_date = end_date.strftime("%B %d, %Y at %I:%M:%S %p")
 
         # If there is no calendar, lets use the first calendar applescript returns. This should probably be modified in the future
         if calendar is None:
-            calendar = self.get_first_calendar()
+            calendar = Calendar.get_first_calendar()
             if calendar is None:
                 return "Can't find a default calendar. Please try again and specify a calendar name."
 
         script = f"""
         -- Open and activate calendar first
         tell application "System Events"
-            set calendarIsRunning to (name of processes) contains "{self.calendar_app}"
+            set calendarIsRunning to (name of processes) contains "{app_name}"
             if calendarIsRunning then
-                tell application "{self.calendar_app}" to activate
+                tell application "{app_name}" to activate
             else
-                tell application "{self.calendar_app}" to launch
+                tell application "{app_name}" to launch
                 delay 1 -- Wait for the application to open
-                tell application "{self.calendar_app}" to activate
+                tell application "{app_name}" to activate
             end if
         end tell
-        tell application "{self.calendar_app}"
+        tell application "{app_name}"
             tell calendar "{calendar}"
                 set startDate to date "{applescript_start_date}"
                 set endDate to date "{applescript_end_date}"
                 make new event at end with properties {{summary:"{title}", start date:startDate, end date:endDate, location:"{location}", description:"{notes}"}}
             end tell
             -- tell the Calendar app to refresh if it's running, so the new event shows up immediately
-            tell application "{self.calendar_app}" to reload calendars
+            tell application "{app_name}" to reload calendars
         end tell
         """
 
@@ -205,9 +218,11 @@ class Calendar:
             return f"""Event created successfully in the "{calendar}" calendar."""
         except subprocess.CalledProcessError as e:
             return str(e)
+        
 
+    @staticmethod
     def delete_event(
-        self, event_title: str, start_date: datetime.datetime, calendar: str = None
+        event_title: str, start_date: datetime.datetime, calendar: str = None
     ) -> str:
         if platform.system() != "Darwin":
             return "This method is only supported on MacOS"
@@ -218,25 +233,26 @@ class Calendar:
 
         # If there is no calendar, lets use the first calendar applescript returns. This should probably be modified in the future
         if calendar is None:
-            calendar = self.get_first_calendar()
+            calendar = Calendar.get_first_calendar()
             if not calendar:
                 return "Can't find a default calendar. Please try again and specify a calendar name."
 
         # Format datetime for AppleScript
-        applescript_start_date = start_date.strftime("%B %d, %Y %I:%M:%S %p")
+        start_date = datetime.datetime.strptime(start_date, '%Y-%m-%dT%H:%M:%S')
+        applescript_start_date = start_date.strftime("%B %d, %Y at %I:%M:%S %p")
         script = f"""
         -- Open and activate calendar first
         tell application "System Events"
-            set calendarIsRunning to (name of processes) contains "{self.calendar_app}"
+            set calendarIsRunning to (name of processes) contains "{app_name}"
             if calendarIsRunning then
-                tell application "{self.calendar_app}" to activate
+                tell application "{app_name}" to activate
             else
-                tell application "{self.calendar_app}" to launch
+                tell application "{app_name}" to launch
                 delay 1 -- Wait for the application to open
-                tell application "{self.calendar_app}" to activate
+                tell application "{app_name}" to activate
             end if
         end tell
-        tell application "{self.calendar_app}"
+        tell application "{app_name}"
             -- Specify the name of the calendar where the event is located
             set myCalendar to calendar "{calendar}"
             
@@ -272,18 +288,19 @@ class Calendar:
         else:
             return "Unknown error deleting event. Please check event title and date."
 
-    def get_first_calendar(self) -> str:
+    @staticmethod
+    def get_first_calendar() -> str:
         # Literally just gets the first calendar name of all the calendars on the system. AppleScript does not provide a way to get the "default" calendar
         script = f"""
             -- Open calendar first
             tell application "System Events"
-                set calendarIsRunning to (name of processes) contains "{self.calendar_app}"
+                set calendarIsRunning to (name of processes) contains "{app_name}"
                 if calendarIsRunning is false then
-                    tell application "{self.calendar_app}" to launch
+                    tell application "{app_name}" to launch
                     delay 1 -- Wait for the application to open
                 end if
             end tell
-            tell application "{self.calendar_app}"
+            tell application "{app_name}"
             -- Get the name of the first calendar
                 set firstCalendarName to name of first calendar
             end tell
