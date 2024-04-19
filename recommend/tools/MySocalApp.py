@@ -8,6 +8,7 @@ from openai import OpenAI
 import json
 import pytesseract
 from PIL import Image
+import re
 
 client = OpenAI()
 
@@ -42,13 +43,53 @@ def create_calendar_event(credentials, summary, location, description, start_tim
         },
         'attendees': [{'email': email} for email in attendees]
     }
-
-    print(event)
     
     event = service.events().insert(calendarId='primary', body=event).execute()
-    message = 'Event created: %s' % (event.get('htmlLink'))
+    print('Event created: %s' % (event.get('htmlLink')))
+    return event
 
-    return message
+def is_valid_email(email):
+    # Simple regex for validating an email address, for a more complex validation consider using a library
+    return re.match(r"[^@]+@[^@]+\.[^@]+", email)
+
+def get_valid_emails(attendees):
+    valid_emails = []
+    invalid_emails = []
+    list_of_emails = attendees.split(',')
+    for email in list_of_emails:
+        if is_valid_email(email):
+            valid_emails.append({'email': email})
+        else:
+            invalid_emails.append(email)
+    return valid_emails, invalid_emails
+
+def reprompt_for_missing_details(missing_fields):
+    updated_details = {}
+    print("Some details are missing or invalid. Please provide the following:")
+    for field in missing_fields:
+        updated_value = input(f"Enter {field}: ")
+        updated_details[field] = updated_value
+    return updated_details
+
+def validate_event_details(details):
+    missing_fields = []
+    invalid_fields = {}
+
+    # Check required fields
+    required_fields = ['summary', 'location', 'description', 'attendees']
+    for field in required_fields:
+        if not details.get(field):
+            missing_fields.append(field)
+
+    # Validate email fields
+    if 'attendees' in details and details['attendees']:
+        valid_emails, invalid_emails = get_valid_emails(details['attendees'])
+        if invalid_emails:
+            invalid_fields['attendees'] = invalid_emails
+        details['attendees'] = valid_emails
+
+    return missing_fields, invalid_fields
+
 
 def extract_text_from_image(image_path):
     try:
@@ -62,7 +103,7 @@ def extract_event_details(user_input):
     response = client.chat.completions.create(
         model="gpt-4-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant. Only return the event details into JSON format including meeting name, location, description, attendees which are separated by a comma, and time preferences. Sample JSON format: {'name': 'Meeting with John and Alice', 'location': 'Coffee Shop', 'description': 'Discuss project details', 'attendees': 'john@example.com,alice@example.com"},
+            {"role": "system", "content": "You are a helpful assistant. Only return the event details into JSON format including meeting name, location, description, attendees and time preferences. Sample JSON format: {'summary': 'Meeting with John and Alice', 'location': 'Coffee Shop', 'description': 'Discuss project details', 'attendees': 'john@example.com,alice@example.com', 'time_preferences': 'Next Tuesday at 3PM'"},
             {"role": "user", "content": user_input}
         ],
         temperature=0
@@ -80,12 +121,12 @@ def suggest_optimal_time(credentials, user_constraints):
 
     current_datetime = datetime.datetime.utcnow().isoformat() + 'Z'
 
-    prompt = f"As of {current_datetime}, {event_data}\n with time preference: {user_constraints}"
+    prompt = f"As of today:{current_datetime},\n {event_data}\n with time preference: {user_constraints}"
 
     response = client.chat.completions.create(
       model="gpt-4-turbo",
       messages=[
-          {"role": "system", "content": "You are an AI event scheduler assistant. The user has provided you with a list of events and some constraints for the meeting time. Your goal is to suggest the best time for the meeting based on the user's time preferences and the existing events on their calendar. Avoid any time before 9am and after 9pm. Only return the best date and time in RFC3339 date format. For example, just return '2022-01-01T12:00:00Z' and nothing else in your response."},
+          {"role": "system", "content": f"You are an AI event scheduler assistant and today's date is {current_datetime}. Your goal is to suggest the best time for the meeting based on any mentioned time preferences and the existing events on their calendar. Avoid any time before 9am and after 9pm. Only return the best date and time in RFC3339 date format. For example, just return '2022-01-01T12:00:00Z' and nothing else in your response."},
           {"role": "user", "content": prompt}
       ],
       temperature=0
@@ -97,15 +138,35 @@ def suggest_optimal_time(credentials, user_constraints):
 
 def suggest_and_schedule_event(credentials, details_json):
     details = json.loads(details_json)  # Convert JSON string back to dictionary
-    summary = details.get("name")
+    missing_fields, invalid_fields = validate_event_details(details)
+    
+    # Loop to handle missing fields
+    while missing_fields:
+        print(f"Missing required details: {', '.join(missing_fields)}")
+        new_details = reprompt_for_missing_details(missing_fields)
+        # Update details with the new information provided by the user
+        details.update(new_details)
+        # Re-validate the updated details
+        missing_fields, invalid_fields = validate_event_details(details)
+    
+    # Loop to handle invalid fields
+    while invalid_fields.get('attendees'):
+        print("Invalid email addresses:", ', '.join(invalid_fields['attendees']))
+        new_emails = input("Enter valid email addresses separated by commas: ").split(',')
+        # Update the details with the new emails
+        details['attendees'], invalid_emails = get_valid_emails(new_emails)
+        invalid_fields['attendees'] = invalid_emails
+    
+    summary = details.get("summary")
     location = details.get("location")
     description = details.get("description")
-    attendees = details.get("attendees", "").split(',')
+    attendees = [attendee['email'] for attendee in details.get("attendees", [])]
     user_constraints = details.get("time_preferences")
+    print("Details:", details)
     
     suggested_time = suggest_optimal_time(credentials, user_constraints)
     if suggested_time:
-        parse_and_schedule_event(credentials, suggested_time, summary, location, description, attendees)
+        return parse_and_schedule_event(credentials, suggested_time, summary, location, description, attendees)
 
 
 def parse_and_schedule_event(credentials, suggested_time, summary, location, description, attendees):
@@ -133,13 +194,13 @@ def extract_details_from_image_and_schedule(image_path):
     else:
         print("No text could be extracted from the image.")
 
-# if __name__ == '__main__':
-#     #schedule_event_from_description()
-#     extract_details_from_image_and_schedule('sample_email.png')
+if __name__ == '__main__':
+    #schedule_event_from_description()
+    extract_details_from_image_and_schedule('sample_image_2.png')
 
-
-def auto_event_scheduler (screenshot_detail):
+def auto_event_scheduler (snapshot_details):
+    print('snapshot_details:', snapshot_details)
     credentials = authenticate_google_calendar()
-    user_input = input("Please describe the event you want to schedule, including the name, location, description, attendees, and any time preferences: ")
-    event_details = extract_event_details(user_input)
-    suggest_and_schedule_event(credentials, event_details)
+    #user_input = input("Please describe the event you want to schedule, including the name, location, description, attendees, and any time preferences: ")
+    event_details = extract_event_details(snapshot_details)
+    return suggest_and_schedule_event(credentials, event_details)
