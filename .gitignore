@@ -10,3 +10,5 @@ output_videos/
 screenshot_data
 myenv
 .gitignore
+recommend/client_secret.json
+recommend/google_client.json
