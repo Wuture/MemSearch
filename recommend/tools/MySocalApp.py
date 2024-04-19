@@ -55,7 +55,10 @@ def is_valid_email(email):
 def get_valid_emails(attendees):
     valid_emails = []
     invalid_emails = []
-    list_of_emails = attendees.split(',')
+    if "," in attendees:
+        list_of_emails = attendees.split(',')
+    else:
+        list_of_emails = [attendees]
     for email in list_of_emails:
         if is_valid_email(email):
             valid_emails.append({'email': email})
@@ -74,6 +77,8 @@ def reprompt_for_missing_details(missing_fields):
 def validate_event_details(details):
     missing_fields = []
     invalid_fields = {}
+
+    print(details)
 
     # Check required fields
     required_fields = ['summary', 'location', 'description', 'attendees']
@@ -100,10 +105,15 @@ def extract_text_from_image(image_path):
 
 
 def extract_event_details(user_input):
+    message = '''
+    You are a helpful assistant. Only return the event details into JSON format including meeting name, location, description, attendees separated by comma if multiple and time preferences.
+    Sample JSON format to return if multiple attendees present: {'summary': 'Meeting with John and Alice', 'location': 'Coffee Shop', 'description': 'Discuss project details', 'attendees': 'john@example.com,alice@example.com', 'time_preferences': 'Next Tuesday at 3PM'\n
+    Sample JSON format to return if single attendee present: {'summary': 'Meeting with John and Alice', 'location': 'Coffee Shop', 'description': 'Discuss project details', 'attendees': 'john@example.com', 'time_preferences': 'Next Tuesday at 3PM'
+    '''
     response = client.chat.completions.create(
         model="gpt-4-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant. Only return the event details into JSON format including meeting name, location, description, attendees and time preferences. Sample JSON format: {'summary': 'Meeting with John and Alice', 'location': 'Coffee Shop', 'description': 'Discuss project details', 'attendees': 'john@example.com,alice@example.com', 'time_preferences': 'Next Tuesday at 3PM'"},
+            {"role": "system", "content": message},
             {"role": "user", "content": user_input}
         ],
         temperature=0
