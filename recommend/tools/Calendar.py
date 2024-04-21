@@ -164,7 +164,7 @@ class Calendar:
         return stdout
 
     @staticmethod
-    def create_event(
+    def create_apple_calendar_event(
         title: str,
         start_date: datetime.datetime,
         end_date: datetime.datetime,

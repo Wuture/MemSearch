@@ -93,14 +93,14 @@
         {
             "type": "function",
             "function": {
-                "name": "auto_event_scheduler",
-                "description": "Recommends this AI Agent whenever user wants to schedule an event based on the snapshot details such as meeting name, location, description, attendee emails and time preference.",
+                "name": "create_google_calendar_event",
+                "description": "Creates a new Google calendar event whenever the user receives a meeting request or wants to schedule an event based on the details in the screenshot such as meeting name, location, description, attendee emails and time preference. Suggest this anytime the user receives a meeting request or wants to schedule an event.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "snapshot_details": {
                             "type": "string",
-                            "description": "The snapshot that contains the event details such as meeting name, location, description, attendee emails and time preference."
+                            "description": "Snapshot details that contain information such as meeting name, location, description, attendee emails and time preference."
                         }
                     }
                 }
@@ -195,8 +195,8 @@
         {
             "type": "function",
             "function": {
-                "name": "create_event",
-                "description": "Creates a new calendar event in the default calendar with the given parameters using AppleScript.",
+                "name": "create_apple_calendar_event",
+                "description": "Creates a new Apple calendar event in the default calendar with the given parameters using AppleScript.",
                 "parameters": {
                     "type": "object",
                     "properties": {
