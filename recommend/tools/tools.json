@@ -93,8 +93,8 @@
         {
             "type": "function",
             "function": {
-                "name": "auto_event_scheduler",
-                "description": "Recommends this AI Agent whenever user wants to schedule an event based on the snapshot details such as meeting name, location, description, attendee emails and time preference.",
+                "name": "create_google_calendar_event",
+                "description": "Recommends this AI Agent whenever user receives a request to meet with someone or wants to schedule an event based on the snapshot details such as meeting name, location, description, attendee emails and time preference.",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -105,5 +105,6 @@
                     }
                 }
             }
-        ]
-    }
+        }
+    ]
+}
