@@ -7,7 +7,7 @@ from openai import OpenAI
 import requests
 from app_utils import *
 import datetime
-from tools.MySocalApp import auto_event_scheduler
+from tools.MySocalApp import create_google_calendar_event
 from tools.contacts import Contacts
 from tools.mail import Mail
 from tools.sms import SMS
@@ -32,6 +32,7 @@ Today's date is {today_date}.
 You are an action recommendation system assistant on MacOS that recommends a set of actions based on current context and screenshots that the user provides, let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
 You only recommend actions that are available in the tools provided. 
 List all the options from 1~n, and let user choose the action they want to take.
+You can recommend similar options that are available. For example if there is a meeting request you can recommend both Apple Calendar and Google Calendar.
 After user finished the action, proactively suggest more actions for user to take based on current context.
 If you need more parameters to complete function calling, you can ask the user for more information.
 '''
@@ -65,8 +66,8 @@ def load_tools():
             # Add the function to the available_functions dictionary
             available_functions[name] = member
 
-    # add auto_event_scheduler from MySocalApp to available functions
-    available_functions['auto_event_scheduler'] = auto_event_scheduler
+    # add schedule_google_calendar_event from MySocalApp to available functions
+    available_functions['create_google_calendar_event'] = create_google_calendar_event
 
     # Add Contacts to available functions
     add_functions_to_available_functions (Contacts)

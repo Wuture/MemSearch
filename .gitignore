@@ -11,4 +11,5 @@ screenshot_data
 myenv
 .gitignore
 recommend/tools/client_secret.json
-recommend/tools/google_client.json
+recommend/tools/key.txt
+client_secret.json

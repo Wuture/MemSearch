@@ -208,7 +208,7 @@ if __name__ == '__main__':
     #schedule_event_from_description()
     extract_details_from_image_and_schedule('sample_image_2.png')
 
-def auto_event_scheduler (snapshot_details):
+def create_google_calendar_event (snapshot_details):
     print('snapshot_details:', snapshot_details)
     credentials = authenticate_google_calendar()
     #user_input = input("Please describe the event you want to schedule, including the name, location, description, attendees, and any time preferences: ")
