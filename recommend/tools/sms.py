@@ -5,6 +5,8 @@ from app_utils import run_applescript
 class SMS:
     @staticmethod
     def send_sms(to: str, message: str) -> str:
+        print ("Sending SMS to:", to, "with message:", message)
+
         """
         Sends an SMS message to the specified recipient using the Messages app.
         """

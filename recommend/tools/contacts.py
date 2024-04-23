@@ -4,6 +4,8 @@ from app_utils import run_applescript_capture
 class Contacts:
     @staticmethod
     def get_phone_number(contact_name):
+        print ("The contact name is:", contact_name)
+
         """
         Returns the phone number of a contact by name.
         """
@@ -27,6 +29,7 @@ class Contacts:
                 # Language model friendly error message
                 return f"A contact for '{contact_name}' was not found, perhaps one of these similar contacts might be what you are looking for? {names} \n Please try again and provide a more specific contact name."
         else:
+            print ("The phone number is:", stout.replace('\n', ''))
             return stout.replace('\n', '')
 
     @staticmethod
@@ -58,6 +61,7 @@ class Contacts:
 
     @staticmethod
     def get_full_names_from_first_name(contact, first_name):
+        
         """
         Returns a list of full names of contacts that contain the first name provided.
         """
@@ -75,6 +79,8 @@ class Contacts:
         end tell
         '''
         names, _ = run_applescript_capture(script)
+
+        print ("The full names are:", names)
         if names:
             return names
         else:
