@@ -287,6 +287,57 @@
         {
             "type": "function",
             "function": {
+                "name": "search_location_in_maps",
+                "description": "Searches a given location in maps.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string",
+                            "description": "A location"
+                        }
+                    },
+                    "required": [
+                        "location"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "generate_and_execute_applescript",
+                "description": "Generates the required AppleScript and executes within the terminal.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "description": {
+                            "type": "string",
+                            "description": "The description of the AppleScript to be executed"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "execute_command",
+                "description": "Executes any command in the terminal and returns the output.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "command": {
+                            "type": "string",
+                            "description": "The command to be executed in the terminal"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
                 "name": "get_first_calendar",
                 "description": "Literally just gets the first calendar name of all the calendars on the system. AppleScript does not provide a way to get the 'default' calendar",
                 "parameters": {
