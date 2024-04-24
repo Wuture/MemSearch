@@ -11,6 +11,9 @@ from tools.MySocalApp import create_google_calendar_event
 from tools.contacts import Contacts
 from tools.mail import Mail
 from tools.sms import SMS
+from tools.location import search_location_in_maps
+from tools.executecommand import execute_command
+from tools.executecommand import generate_and_execute_applescript
 from tools.Calendar import Calendar
 import pytesseract
 
@@ -79,6 +82,9 @@ def load_tools():
     add_functions_to_available_functions (Mail)
     add_functions_to_available_functions (SMS)
     add_functions_to_available_functions (Calendar)
+    available_functions['search_location_in_maps'] = search_location_in_maps
+    available_functions['execute_command'] = execute_command
+    available_functions['generate_and_execute_applescript'] = generate_and_execute_applescript
 
     return available_tools, available_functions
 
@@ -166,6 +172,7 @@ def get_context (image, app_name, window_name):
     # print (response.json())
     # message =  response.json()['choices'][0]['message']['content']
     response_json = response.json()
+    print (response_json)
     message = response_json['choices'][0]['message']['content']
     # append the message to the messages list
     print ("Assistant> ", message)
