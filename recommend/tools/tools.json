@@ -458,6 +458,52 @@
                     "required": []
                 }
             }
+        },
+        {
+            "type":"function",
+            "function": {
+                "name": "run_shortcut",
+                "description": "Runs a MacOS shortcut using the app Shortcuts given an shortcut argument",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "shortcut": {
+                            "type": "string",
+                            "description": "Name of the shortcut"
+                        }
+                    },
+                    "required": ["string"]
+                }
+            }
+        },
+        {
+            "type":"function",
+            "function": {
+                "name": "get_shortcuts",
+                "description": "Returns a list of shortcuts available in the MacOS app 'Shortcuts'",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                }
+            }
+        },
+        {
+           "type":"function",
+           "function": {
+                "name": "write_message_with_keyboard",
+                "description": "Writes a message using the keyboard",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "message": {
+                            "type": "string",
+                            "description": "The message to be written"
+                        }
+                    },
+                    "required": ["message"]
+                }
+           }
         }
     ]
 }

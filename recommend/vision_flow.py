@@ -11,10 +11,10 @@ from tools.MySocalApp import create_google_calendar_event
 from tools.contacts import Contacts
 from tools.mail import Mail
 from tools.sms import SMS
-from tools.calendar import Calendar
 from tools.location import search_location_in_maps
 from tools.executecommand import execute_command
 from tools.executecommand import generate_and_execute_applescript
+from tools.Calendar import Calendar
 import pytesseract
 
 
@@ -38,6 +38,11 @@ List all the options from 1~n, and let user choose the action they want to take.
 You can recommend similar options that are available. For example if there is a meeting request you can recommend both Apple Calendar and Google Calendar.
 After user finished the action, proactively suggest more actions for user to take based on current context.
 If you need more parameters to complete function calling, you can ask the user for more information.
+
+In your available tools, there is a function called run_shortcut, which runs a certain shortcut designated by the user. You can use this function to run any shortcut on the user's machine.
+e.g. run_shortcut("Send iMessage") would summon the Messages app and send an iMessage to the recipient.
+To find out what shortcuts are available, you can call the function get_shortcuts, which will return a list of all available shortcuts on the user's machine.
+
 '''
 
 available_functions = {}

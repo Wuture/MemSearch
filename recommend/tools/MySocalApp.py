@@ -19,16 +19,38 @@ def authenticate_google_calendar():
     return credentials
 
 def get_calendar_events(credentials, max_results=10):
-    service = build('calendar', 'v3', credentials=credentials)
+    try:
+        service = build('calendar', 'v3', credentials=credentials)
+        print (service)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return []
+    
     now = datetime.datetime.utcnow().isoformat() + 'Z'
-    events_result = service.events().list(calendarId='primary', timeMin=now,
-                                          maxResults=max_results, singleEvents=True,
-                                          orderBy='startTime').execute()
+    # events_result = service.events().list(calendarId='primary', timeMin=now,
+    #                                       maxResults=max_results, singleEvents=True,
+    #                                       orderBy='startTime').execute()
+
+    # catch service events error
+    try:
+        events_result = service.events().list(calendarId='primary', timeMin=now,
+                                              maxResults=max_results, singleEvents=True,
+                                              orderBy='startTime').execute()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return []
+    
     events = events_result.get('items', [])
     return events
 
 def create_calendar_event(credentials, summary, location, description, start_time, end_time, attendees):
-    service = build('calendar', 'v3', credentials=credentials)
+    try:
+        service = build('calendar', 'v3', credentials=credentials)
+        print (service)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
     event = {
         'summary': summary,
         'location': location,
@@ -124,6 +146,7 @@ def extract_event_details(user_input):
 def suggest_optimal_time(credentials, user_constraints):
     events = get_calendar_events(credentials)
     event_data = "Here are the scheduled events:\n"
+    print ("All events:", events)
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
         end = event['end'].get('dateTime', event['end'].get('date'))
@@ -175,6 +198,7 @@ def suggest_and_schedule_event(credentials, details_json):
     print("Details:", details)
     
     suggested_time = suggest_optimal_time(credentials, user_constraints)
+    print ("The suggested time is:", suggested_time)
     if suggested_time:
         return parse_and_schedule_event(credentials, suggested_time, summary, location, description, attendees)
 
