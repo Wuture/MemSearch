@@ -14,7 +14,7 @@ ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 import datetime
 import platform
 import subprocess
-from app_utils import run_applescript, run_applescript_capture
+# from app_utils import run_applescript, run_applescript_capture
 import pyautogui
 
 calendar_app = "Calendar"
@@ -74,7 +74,28 @@ def paraphrase_text(text, plan="paid", prefer_gpt="gpt3", custom_style="", langu
     else:
         return {"error": "Failed to fetch data", "status_code": response.status_code}
 
-# def write_message_with_keyboard(message):
-#     # Type and send the message
-#     pyautogui.write(message)
-#     # pyautogui.press('return')
+def write_message_with_keyboard(message):
+    # Type and send the message
+    pyautogui.write(message)
+    # pyautogui.press('return')
+
+# run_shortcut function
+def run_shortcut (shortcut: str) -> str:
+    "Runs given shortcut"
+    try:
+        os.system ("shortcuts run " + "'" + shortcut +"'")
+        return "Sucessfully run shortcut " + shortcut
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return e
+
+# Get a list of shortcuts
+def get_shortcuts ():
+    # stdout, stderr = os.system("shortcuts list")  # Execute command and store stdout &stderr
+
+    # Execute the shell command and capture its output  
+    output = subprocess.check_output(["shortcuts", "list"], universal_newlines=True)
+
+    # Print the output
+    output = output.split("\n")[:-1]
+    return output
