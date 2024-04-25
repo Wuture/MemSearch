@@ -34,6 +34,7 @@ class Contacts:
 
     @staticmethod
     def get_email_address(contact_name):
+        print ("The contact name is:", contact_name)    
         """
         Returns the email address of a contact by name.
         """
