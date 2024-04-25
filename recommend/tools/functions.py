@@ -77,6 +77,7 @@ def paraphrase_text(text, plan="paid", prefer_gpt="gpt3", custom_style="", langu
 def write_message_with_keyboard(message):
     # Type and send the message
     pyautogui.write(message)
+    return "Message sent successfully as: " + message
     # pyautogui.press('return')
 
 # run_shortcut function
