@@ -93,14 +93,14 @@
         {
             "type": "function",
             "function": {
-                "name": "create_google_calendar_event",
-                "description": "Creates a new Google calendar event whenever the user receives a meeting request or wants to schedule an event based on the details in the screenshot such as meeting name, location, description, attendee emails and time preference. Suggest this anytime the user receives a meeting request or wants to schedule an event.",
+                "name": "auto_event_scheduler",
+                "description": "Recommends this AI Agent whenever user wants to schedule an event based on the snapshot details such as meeting name, location, description, attendee emails and time preference.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "snapshot_details": {
                             "type": "string",
-                            "description": "Snapshot details that contain information such as meeting name, location, description, attendee emails and time preference."
+                            "description": "The snapshot that contains the event details such as meeting name, location, description, attendee emails and time preference."
                         }
                     }
                 }
@@ -195,8 +195,8 @@
         {
             "type": "function",
             "function": {
-                "name": "create_apple_calendar_event",
-                "description": "Creates a new Apple calendar event in the default calendar with the given parameters using AppleScript.",
+                "name": "create_event",
+                "description": "Creates a new calendar event in the default calendar with the given parameters using AppleScript.",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -287,19 +287,32 @@
         {
             "type": "function",
             "function": {
+                "name": "execute_command",
+                "description": "Executes any command in the terminal and returns the output.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "command": {
+                            "type": "string",
+                            "description": "The command to be executed in the terminal"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
                 "name": "search_location_in_maps",
-                "description": "Searches a given location in maps.",
+                "description": "Searchesor finds a given location in maps.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "location": {
                             "type": "string",
-                            "description": "A location"
+                            "description": "The name of the location"
                         }
-                    },
-                    "required": [
-                        "location"
-                    ]
+                    }
                 }
             }
         },
@@ -314,22 +327,6 @@
                         "description": {
                             "type": "string",
                             "description": "The description of the AppleScript to be executed"
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "type": "function",
-            "function": {
-                "name": "execute_command",
-                "description": "Executes any command in the terminal and returns the output.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "command": {
-                            "type": "string",
-                            "description": "The command to be executed in the terminal"
                         }
                     }
                 }
@@ -458,52 +455,6 @@
                     "required": []
                 }
             }
-        },
-        {
-            "type":"function",
-            "function": {
-                "name": "run_shortcut",
-                "description": "Runs a MacOS shortcut using the app Shortcuts given an shortcut argument",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "shortcut": {
-                            "type": "string",
-                            "description": "Name of the shortcut"
-                        }
-                    },
-                    "required": ["string"]
-                }
-            }
-        },
-        {
-            "type":"function",
-            "function": {
-                "name": "get_shortcuts",
-                "description": "Returns a list of shortcuts available in the MacOS app 'Shortcuts'",
-                "parameters": {
-                    "type": "object",
-                    "properties": {},
-                    "required": []
-                }
-            }
-        },
-        {
-           "type":"function",
-           "function": {
-                "name": "write_message_with_keyboard",
-                "description": "Writes a message using the keyboard",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "message": {
-                            "type": "string",
-                            "description": "The message to be written"
-                        }
-                    },
-                    "required": ["message"]
-                }
-           }
         }
     ]
 }
