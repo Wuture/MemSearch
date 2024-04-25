@@ -14,7 +14,7 @@ from tools.sms import SMS
 from tools.location import search_location_in_maps
 from tools.executecommand import execute_command
 from tools.executecommand import generate_and_execute_applescript
-from tools.Calendar import Calendar
+from tools.calendar import Calendar
 import pytesseract
 
 
@@ -33,16 +33,16 @@ today_date = datetime.date.today()
 system_prompt = f'''
 Today's date is {today_date}.
 You are an action recommendation system assistant on MacOS that recommends a set of actions based on current context and screenshots that the user provides, let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
-You only recommend actions that are available in the tools provided. 
+You only recommend actions that are available in the tools provided. To get more tools, always call function get_shortcuts to find out what shortcuts are available, and add them to available tools to recommend based on the context.
 List all the options from 1~n, and let user choose the action they want to take.
 You can recommend similar options that are available. For example if there is a meeting request you can recommend both Apple Calendar and Google Calendar.
 After user finished the action, proactively suggest more actions for user to take based on current context.
 If you need more parameters to complete function calling, you can ask the user for more information.
 
-In your available tools, there is a function called run_shortcut, which runs a certain shortcut designated by the user. You can use this function to run any shortcut on the user's machine.
+In your available tools, there is a function called run_shortcut, which runs a certain shortcut designated by the user. You can use this function to run any shortcut on MacOS. 
 e.g. run_shortcut("Send iMessage") would summon the Messages app and send an iMessage to the recipient.
-To find out what shortcuts are available, you can call the function get_shortcuts, which will return a list of all available shortcuts on the user's machine.
 
+If a tool is not available then generate the code necessary to execute the action and then call the execute_command function to execute the code.
 '''
 
 available_functions = {}
