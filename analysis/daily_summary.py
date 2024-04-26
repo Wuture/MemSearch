@@ -6,9 +6,7 @@ import os
 
 
 # Check if the key exists
-if "OPENAI_API_KEY" in os.environ:
-    print("OpenAI API key is set.")
-else:
+if "OPENAI_API_KEY" not in os.environ:
     print("OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
 
 # Use OpenAI to generate a summary of the daily usage behavior an user based on data collected

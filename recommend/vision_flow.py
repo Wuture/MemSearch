@@ -42,6 +42,9 @@ If you need more parameters to complete function calling, you can ask the user f
 In your available tools, there is a function called run_shortcut, which runs a certain shortcut designated by the user. You can use this function to run any shortcut on the user's machine.
 e.g. run_shortcut("Send iMessage") would summon the Messages app and send an iMessage to the recipient.
 
+On MacOS, if you can't find a function to do something, you can use generate_and_execute_applescript to generate an applescript and execute it.
+If a tool is not available then generate the code necessary to execute the action and then call the execute_command function to execute the code.
+If you can't find contact information, you can use the Contacts class to get contact information.
 '''
 
 available_functions = {}
@@ -99,7 +102,7 @@ def extract_text_from_image(image):
 
 # Send context to GPT-4 and ask for a list of actions
 def get_context (image, app_name, window_name):
-    print ("Preparing an response!\n")
+    # print ("Preparing an response!\n")
     base64_image = encode_image(image)
     text_from_image = extract_text_from_image(image)
 
@@ -246,27 +249,8 @@ def run_conversation(messages):
     
     return messages
 
-# def on_activate():
-#     global loop_active
-    
-#     if not loop_active:
-#         screenshot, app_name, window_name = get_active_window_screenshot()
-#         screenshot = screenshot.resize((screenshot.width, screenshot.height))
-#         messages = get_context(screenshot, app_name, window_name)
-#         loop_active = True
-#         while loop_active:
-#             user_input = input("> ")
-#             # Listener for keyboard events
-#             # with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-#             #     listener.join()
-#             messages.append({"role": "user", "content": user_input})
-#             messages = run_conversation(messages)
-#     else:
-#         loop_active = False
-
-
 def on_activate():
-    print ("Scanning the current window...\n")
+    print ("\nScanning the current window...\n")
     global messages
     screenshot, app_name, window_name = get_active_window_screenshot()
     screenshot = screenshot.resize((screenshot.width, screenshot.height))
