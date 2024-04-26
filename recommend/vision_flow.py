@@ -14,7 +14,7 @@ from tools.sms import SMS
 from tools.location import search_location_in_maps
 from tools.executecommand import execute_command
 from tools.executecommand import generate_and_execute_applescript
-from tools.Calendar import Calendar
+from tools.calendar import Calendar
 import pytesseract
 import threading
 
@@ -39,9 +39,10 @@ You can recommend similar options that are available. For example if there is a 
 After user finished the action, proactively suggest more actions for user to take based on current context.
 If you need more parameters to complete function calling, you can ask the user for more information. Don't call functions if you are unsure about the correctness of parameters.
 
-In your available tools, there is a function called run_shortcut, which runs a certain shortcut designated by the user. You can use this function to run any shortcut on the user's machine.
+In your available tools, there is a function called run_shortcut, which runs a certain shortcut designated by the user. You can use this function to run any shortcut on MacOS. 
 e.g. run_shortcut("Send iMessage") would summon the Messages app and send an iMessage to the recipient.
 
+If a tool is not available then generate the code necessary to execute the action and then call the execute_command function to execute the code.
 '''
 
 available_functions = {}
