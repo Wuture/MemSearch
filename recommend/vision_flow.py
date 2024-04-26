@@ -16,7 +16,9 @@ from tools.executecommand import execute_command
 from tools.executecommand import generate_and_execute_applescript
 from tools.Calendar import Calendar
 import pytesseract
+import threading
 
+messages = []
 
 # Check if the key exists
 if "OPENAI_API_KEY" not in os.environ:
@@ -25,8 +27,6 @@ if "OPENAI_API_KEY" not in os.environ:
 # get openai api key from environment variable
 client = OpenAI()
 api_key = os.environ.get("OPENAI_API_KEY")
-
-messages = []
 
 today_date = datetime.date.today()
 
@@ -37,7 +37,7 @@ You only recommend actions that are available in the tools provided. To get more
 List all the options from 1~n, and let user choose the action they want to take.
 You can recommend similar options that are available. For example if there is a meeting request you can recommend both Apple Calendar and Google Calendar.
 After user finished the action, proactively suggest more actions for user to take based on current context.
-If you need more parameters to complete function calling, you can ask the user for more information.
+If you need more parameters to complete function calling, you can ask the user for more information. Don't call functions if you are unsure about the correctness of parameters.
 
 In your available tools, there is a function called run_shortcut, which runs a certain shortcut designated by the user. You can use this function to run any shortcut on the user's machine.
 e.g. run_shortcut("Send iMessage") would summon the Messages app and send an iMessage to the recipient.
@@ -89,23 +89,6 @@ def load_tools():
 
 available_tools, available_functions = load_tools()
 
-# for tool in available_tools:
-    # function_name  = tool['function']['name']
-#     # print (function_name)
-#     function = available_functions[function_name]
-    # print (function)
-# print (available_functions)
-
-# for function in available_functions:
-    # print (function)
-
-# for tool in available_tools:
-#     print (tool)
-
-
-# Write an intro to this script and print to terminal
-print ("Press 'command + shift' on your current window, see AI recommend a list of things that you could do!  \n")
-
 def extract_text_from_image(image):
     try:
         return pytesseract.image_to_string(image)
@@ -119,18 +102,6 @@ def get_context (image, app_name, window_name):
     print ("Preparing an response!\n")
     base64_image = encode_image(image)
     text_from_image = extract_text_from_image(image)
-
-    # Prepare system message for gpt4v
-    system = {
-        "role": "system",
-        "content": [
-            {
-            "type": "text",
-            "text": system_prompt,
-            },
-        ]
-
-    }
 
     user_query =  {
         "role": "user",
@@ -148,7 +119,7 @@ def get_context (image, app_name, window_name):
         ]
     }
 
-    messages = [system, user_query]
+    messages.append(user_query)
 
     # print (messages)
 
@@ -167,14 +138,21 @@ def get_context (image, app_name, window_name):
     }
 
     print ("Pulling a list of actions...\n")
-    response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+
+    # try to get a response from the model, if not working, retry   
+    try:
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+    
     # print (response.json())
     # message =  response.json()['choices'][0]['message']['content']
     response_json = response.json()
-    print (response_json)
+    # print (response_json)
     message = response_json['choices'][0]['message']['content']
     # append the message to the messages list
-    print ("Assistant> ", message)
+    # print ("Assistant> ", message)
 
     # construct assistant reply
     reply = {
@@ -215,11 +193,21 @@ def run_conversation(messages):
 
             # print("Calling function: ", function_name)
 
-            function_response = function_to_call(**function_args)
+            # catch error and just append the error to the messages
+            try:
+                function_response = function_to_call(**function_args)
+            except Exception as e:
+                function_response = str(e)
+                print(f"An error occurred: {e}")
 
             # If the response is a json, convert it to a string
             if isinstance(function_response, dict):
                 function_response = json.dumps(function_response)
+
+            # if function response is a list, then combine them into a single string
+            if isinstance(function_response, list):
+                function_response = ",".join(function_response)
+
             messages.append(
                 {
                     "tool_call_id": tool_call.id,
@@ -235,7 +223,7 @@ def run_conversation(messages):
         second_message = second_response.choices[0]
         if second_message.message.content:
             # print("Response from the model after function call:")
-            print(second_message.message.content)
+            print(">Assistant: ", second_message.message.content)
         # print(second_message)
         # append the new message to the conversation
             # Prepare assistant message to append to the conversation
@@ -247,7 +235,7 @@ def run_conversation(messages):
     else:
         if response_message.content is not None:
             # print("Response from the model: \n") 
-            print(response_message.content)
+            print(">Assistant: ", response_message.content)
             
             # Add assistant's response to the conversation
             assistant_message = {
@@ -258,26 +246,35 @@ def run_conversation(messages):
     
     return messages
 
-loop_active = False 
+# def on_activate():
+#     global loop_active
+    
+#     if not loop_active:
+#         screenshot, app_name, window_name = get_active_window_screenshot()
+#         screenshot = screenshot.resize((screenshot.width, screenshot.height))
+#         messages = get_context(screenshot, app_name, window_name)
+#         loop_active = True
+#         while loop_active:
+#             user_input = input("> ")
+#             # Listener for keyboard events
+#             # with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+#             #     listener.join()
+#             messages.append({"role": "user", "content": user_input})
+#             messages = run_conversation(messages)
+#     else:
+#         loop_active = False
+
 
 def on_activate():
-    global loop_active
-    
-    if not loop_active:
-        screenshot, app_name, window_name = get_active_window_screenshot()
-        screenshot = screenshot.resize((screenshot.width, screenshot.height))
-        messages = get_context(screenshot, app_name, window_name)
-        loop_active = True
-        while loop_active:
-            user_input = input("> ")
-            # Listener for keyboard events
-            # with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-            #     listener.join()
-            messages.append({"role": "user", "content": user_input})
-            messages = run_conversation(messages)
-    else:
-        loop_active = False
-
+    print ("Scanning the current window...\n")
+    global messages
+    screenshot, app_name, window_name = get_active_window_screenshot()
+    screenshot = screenshot.resize((screenshot.width, screenshot.height))
+    new_context = get_context(screenshot, app_name, window_name)
+    messages = new_context
+    messages = run_conversation(messages)
+    print(">User: ", end="", flush=True)
+    # loop_active = True
 
 def for_canonical(f):
     # Convert the key to a canonical version
@@ -291,9 +288,10 @@ HOTKEYS = {keyboard.Key.cmd, keyboard.Key.shift}
 current = set()
 
 def on_press(key):
+    # print ("Key pressed\n")
     if any([key in HOTKEYS, key in current]):
         current.add(key)
-        if all(k in current for k in HOTKEYS) and not loop_active:
+        if all(k in current for k in HOTKEYS):
             on_activate()
 
 def on_release(key):
@@ -302,7 +300,41 @@ def on_release(key):
     except KeyError:
         pass
 
-# Listener for keyboard events
-with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
-    listener.join()
+# # Listener for keyboard events
+def keyboard_listener():
+    with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+        listener.join()
+
+# Prepare system message for gpt4v
+system = {
+    "role": "system",
+    "content": [
+        {
+        "type": "text",
+        "text": system_prompt,
+        },
+    ]
+
+}
+
+if __name__ == "__main__":
+    messages = [system]
+    # Set loop_active to True to keep the main loop running
+    loop_active = True
+
+    # Start the keyboard listener in a separate thread
+    keyboard_thread = threading.Thread(target=keyboard_listener)
+    keyboard_thread.daemon = True
+    keyboard_thread.start()
+
+    print ("Welcome to UtopiaOS Action Recommendation System! What would like me to do for you today? To get started, either tell me the task you try to complete, or simply press command + shift to recommend actions based on vision understanding!\n")
+
+    # Main loop
+    while loop_active:
+        user_input = input(">User: ")
+        if user_input.lower() in ["exit", "quit"]:
+            loop_active = False
+        else:
+            messages.append({"role": "user", "content": user_input})
+            messages = run_conversation(messages)
 

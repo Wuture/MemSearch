@@ -74,7 +74,7 @@
         {
             "type": "function",
             "function": {
-                "name": "reply_message",
+                "name": "write_message_with_keyboard",
                 "description": "Use pyautogui to type a message in the current active window to respond",
                 "parameters": {
                     "type": "object",
