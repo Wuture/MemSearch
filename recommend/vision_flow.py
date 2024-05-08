@@ -44,7 +44,6 @@ e.g. run_shortcut("Send iMessage") would summon the Messages app and send an iMe
 
 On MacOS, if you can't find a function to do something, you can use generate_and_execute_applescript to generate an applescript and execute it.
 If a tool is not available then generate the code necessary to execute the action and then call the execute_command function to execute the code.
-If you can't find contact information, you can use the Contacts class to get contact information.
 '''
 
 available_functions = {}
