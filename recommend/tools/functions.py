@@ -74,11 +74,11 @@ def paraphrase_text(text, plan="paid", prefer_gpt="gpt3", custom_style="", langu
     else:
         return {"error": "Failed to fetch data", "status_code": response.status_code}
 
-def write_message_with_keyboard(message):
-    # Type and send the message
-    pyautogui.write(message)
-    return "Message sent successfully as: " + message
-    # pyautogui.press('return')
+# def write_message_with_keyboard(message):
+#     # Type and send the message
+#     pyautogui.write(message)
+#     return "Message sent successfully as: " + message
+#     # pyautogui.press('return')
 
 # run_shortcut function
 def run_shortcut (shortcut: str) -> str:

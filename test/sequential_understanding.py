@@ -277,14 +277,14 @@ def on_activate():
     screenshot_text, screenshot_ocr, screenshot_images = get_latest_screenshots(3)
 
     # get the context from the images
-    get_context_from_image(images=screenshot_images)
+    # get_context_from_image(images=screenshot_images)
 
     # get the context from the OCR
     # get_context_from_text(screenshot_ocr)
 
     # print (screenshot_text)
     # get the context from the raw text
-    # get_context_from_text(screenshot_text)
+    get_context_from_text(screenshot_text)
 
 def for_canonical(f):
     # Convert the key to a canonical version

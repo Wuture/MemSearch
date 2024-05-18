@@ -17,6 +17,7 @@ from tools.executecommand import generate_and_execute_applescript
 from tools.Calendar import Calendar
 import pytesseract
 import threading
+import time
 
 messages = []
 
@@ -34,7 +35,7 @@ system_prompt = f'''
 Today's date is {today_date}.
 You are an action recommendation system assistant on MacOS that recommends a set of actions based on current context and screenshots that the user provides, let user choose the action they want to take, and proceed to execute the action by calling the corresponding function.
 You only recommend actions that are available in the tools provided. To get more tools, always call function get_shortcuts to find out what shortcuts are available, and add them to available tools to recommend based on the context.
-List all the options from 1~n, and let user choose the action they want to take.
+List all the options from 1~n (don't show any irrelevant options), and let user choose the action they want to take.
 You can recommend similar options that are available. For example if there is a meeting request you can recommend both Apple Calendar and Google Calendar.
 After user finished the action, proactively suggest more actions for user to take based on current context.
 If you need more parameters to complete function calling, you can ask the user for more information. Don't call functions if you are unsure about the correctness of parameters.
@@ -110,7 +111,7 @@ def get_context (image, app_name, window_name):
         "content": [
             {
             "type": "text",
-            "text": f"First take the OCR details: '{text_from_image}' and also give me a description of the screenshot, I am current using {app_name} and on its {window_name}. Give me a list of actions i could do based on the screenshot and context that i provided, and number them. Allow me to choose 1 of the actions to execute."
+            "text": f"Give me a description of the screenshot, I am current using {app_name} and on its {window_name}. Give me a list of actions i could do based on the screenshot and context that i provided, and number them. Allow me to choose 1 of the actions to execute."
             },
             {
             "type": "image_url",
@@ -123,54 +124,57 @@ def get_context (image, app_name, window_name):
 
     messages.append(user_query)
 
-    # print (messages)
+    # # print (messages)
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+    # headers = {
+    #     "Content-Type": "application/json",
+    #     "Authorization": f"Bearer {api_key}"
+    # }
 
-    payload = {
-        "model": "gpt-4-turbo",
-        "messages": messages,
-        "tools": available_tools,
-        "tool_choice": "auto",
-        "max_tokens": 300,
-        "temperature": 0
-    }
+    # payload = {
+    #     "model": "gpt-4o",
+    #     "messages": messages,
+    #     "tools": available_tools,
+    #     "tool_choice": "auto",
+    #     "max_tokens": 300,
+    #     "temperature": 0
+    # }
 
-    print ("Pulling a list of actions...\n")
+    # print ("Pulling a list of actions...\n")
 
-    # try to get a response from the model, if not working, retry   
-    try:
-        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
+    # # try to get a response from the model, if not working, retry   
+    # try:
+    #     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    # except Exception as e:
+    #     print(f"An error occurred: {e}")
+    #     return None
     
-    # print (response.json())
-    # message =  response.json()['choices'][0]['message']['content']
-    response_json = response.json()
-    # print (response_json)
-    message = response_json['choices'][0]['message']['content']
-    # append the message to the messages list
-    # print ("Assistant> ", message)
+    # # print (response.json())
+    # # message =  response.json()['choices'][0]['message']['content']
+    # response_json = response.json()
+    # # print (response_json)
+    # message = response_json['choices'][0]['message']['content']
+    # # append the message to the messages list
+    # # print ("Assistant> ", message)
 
-    # construct assistant reply
-    reply = {
-        "role": "assistant",
-        "content": message
-    }
-
-    messages.append(reply)
+    # # construct assistant reply
+    # reply = {
+    #     "role": "assistant",
+    #     "content": message
+    # }
+    # # remove the last message from the messages list, because it is just an image
+    # messages.pop()
+    # messages.append(reply)
 
     return messages
     
 def run_conversation(messages):
     # print (messages)
     # Step 1: send the conversation and available functions to the model
+    # Time the request
+    start_time = time.time()
     response = client.chat.completions.create(
-        model="gpt-4-turbo",
+        model="gpt-4o",
         messages=messages,
         tools=available_tools,
         tool_choice="auto",  # auto is default, but we'll be explicit
@@ -219,7 +223,7 @@ def run_conversation(messages):
                 }
             )  # extend conversation with function response
         second_response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-4o",
             messages=messages,
         )  # get a new response from the model where it can see the function response
         second_message = second_response.choices[0]
@@ -245,7 +249,8 @@ def run_conversation(messages):
                 "content": response_message.content,
             }
             messages.append(assistant_message)
-    
+    end_time = time.time()
+    print(f"Request took {end_time - start_time} seconds")
     return messages
 
 def on_activate():

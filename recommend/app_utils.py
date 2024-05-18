@@ -46,7 +46,7 @@ def get_active_window_screenshot ():
             # screenshot based on the active window
             results  = screenshot(window)
             # print (window['kCGWindowOwnerName'])
-            print (results)
+            # print (results)
             return results 
         
 
@@ -81,6 +81,3 @@ def encode_image(image):
     buffered = BytesIO()
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode('utf-8')
-
-
-get_active_window_screenshot()
